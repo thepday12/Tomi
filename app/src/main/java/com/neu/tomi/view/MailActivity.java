@@ -46,7 +46,7 @@ public class MailActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         if (isResume) {
-            final SqliteHelper sqliteHelper = new SqliteHelper(MailActivity.this);
+            final SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(MailActivity.this);
             final List<MailObject> mailObjects = sqliteHelper.getAllMail();
             rvMail.setAdapter(new MailAdapter(mailObjects));
         }
@@ -59,7 +59,7 @@ public class MailActivity extends FragmentActivity {
 
         rvMail.setHasFixedSize(true);
         rvMail.setLayoutManager(new LinearLayoutManager(this));
-        final SqliteHelper sqliteHelper = new SqliteHelper(MailActivity.this);
+        final SqliteHelper sqliteHelper =SqliteHelper.getInstanceSQLiteHelper(MailActivity.this);
         final List<MailObject> mailObjects = sqliteHelper.getAllMail();
         if (mailObjects.size() > 0) {
             rvMail.setAdapter(new MailAdapter(mailObjects));

@@ -72,7 +72,7 @@ public class MyGcmListenerService extends GcmListenerService {
         if (jsonObject != null) {
             try {
                 if (jsonObject.getBoolean("state")) {
-                    SqliteHelper sqliteHelper = new SqliteHelper(getBaseContext());
+                    SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(getBaseContext());
                     String id = jsonObject.getString("id");
                     String title = jsonObject.getString("title");
                     String content = jsonObject.getString("content");

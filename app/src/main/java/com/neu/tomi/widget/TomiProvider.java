@@ -635,7 +635,7 @@ public class TomiProvider extends AppWidgetProvider {
 
         public LoadPromotionsGrab(Context context) {
             mContext = context;
-            mSqliteHelper = new SqliteHelper(context);
+            mSqliteHelper = SqliteHelper.getInstanceSQLiteHelper(context);
 
         }
 

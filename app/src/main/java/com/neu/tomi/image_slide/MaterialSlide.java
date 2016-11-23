@@ -151,7 +151,7 @@ public class MaterialSlide extends Fragment {
                 filter);
         dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSqliteHelper = new SqliteHelper(mContext);
+        mSqliteHelper = SqliteHelper.getInstanceSQLiteHelper(mContext);
         mDataItems = new DataItems(mContext);
         slideRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.slideRelativeLayout);
         rlLayoutPromotion = (RelativeLayout) rootView.findViewById(R.id.rlLayoutPromotion);
@@ -513,7 +513,7 @@ public class MaterialSlide extends Fragment {
 
     private void promotionExits() {
         if (mSqliteHelper.promotionExist(mPromtionObject.getPromotionId()) && isTreat == false) {
-            llBonusShow.setVisibility(View.GONE);
+//            llBonusShow.setVisibility(View.GONE);
         }
     }
 
@@ -1021,38 +1021,43 @@ public class MaterialSlide extends Fragment {
             if (jsonObject != null) {
                 try {
                     if (jsonObject.getBoolean("state")) {
-                        List<ItemQTY> itemQTYList = new ArrayList<>();
-                        JSONArray jsonArray = jsonObject.getJSONArray("item");
-                        PromtionObject promtionObject = null;
-                        boolean isBonus = jsonObject.getBoolean("bonus");
-                        int bonusType = jsonObject.getInt("bonus_type");
-                        if (isBonus && bonusType == 0) {
-                            promtionObject = new PromtionObject(jsonObject.getJSONObject("promotion_bonus"));
-                        }
-                        int length = jsonArray.length();
-                        if (length > 0) {
-                            for (int i = 0; i < length; i++) {
-                                JSONObject object = jsonArray.getJSONObject(i);
-                                ItemObject itemObject = new ItemObject(object, true);
-
-                                int qty = object.getInt("qty");
-                                itemQTYList.add(new ItemQTY(itemObject, qty));
+                        PromtionObject tmp=mSqliteHelper.getPromotionWithID(mPromotionID);
+                        if ( tmp!= null) {
+                            mSqliteHelper.updatePromotion(mPromotionID, tmp.getTotal() + 1);
+                            mDialog.dismiss();
+                        }else {
+                            List<ItemQTY> itemQTYList = new ArrayList<>();
+                            JSONArray jsonArray = jsonObject.getJSONArray("item");
+                            PromtionObject promtionObject = null;
+                            boolean isBonus = jsonObject.getBoolean("bonus");
+                            int bonusType = jsonObject.getInt("bonus_type");
+                            if (isBonus && bonusType == 0) {
+                                promtionObject = new PromtionObject(jsonObject.getJSONObject("promotion_bonus"));
                             }
-                            try {
-                                new DownloadBonusItem(mPoint, mXp, isBonus, promtionObject, bonusType).execute(itemQTYList).get(120000, TimeUnit.MILLISECONDS);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            } catch (TimeoutException e) {
-                                e.printStackTrace();
+                            int length = jsonArray.length();
+                            if (length > 0) {
+                                for (int i = 0; i < length; i++) {
+                                    JSONObject object = jsonArray.getJSONObject(i);
+                                    ItemObject itemObject = new ItemObject(object, true);
+
+                                    int qty = object.getInt("qty");
+                                    itemQTYList.add(new ItemQTY(itemObject, qty));
+                                }
+                                try {
+                                    new DownloadBonusItem(mPoint, mXp, isBonus, promtionObject, bonusType).execute(itemQTYList).get(120000, TimeUnit.MILLISECONDS);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (TimeoutException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            } else {
+                                new SaveImageToDisk(mContext, mDataItems, mPoint, mXp, isBonus, promtionObject, bonusType).execute();
                             }
-
-
-                        } else {
-                            new SaveImageToDisk(mContext, mDataItems, mPoint, mXp, isBonus, promtionObject, bonusType).execute();
                         }
-
 
                     } else {
                         Toast.makeText(mContext, jsonObject.getString("error_description"), Toast.LENGTH_SHORT).show();

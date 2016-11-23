@@ -164,7 +164,7 @@ public class DataItems {
 
     public DataItems(Context context) {
         mContext = context;
-        mSqliteHelper = new SqliteHelper(mContext);
+        mSqliteHelper = SqliteHelper.getInstanceSQLiteHelper(mContext);
         String PACKAGE_NAME = context.getApplicationContext().getPackageName();
         mSharedPreferences = context.getSharedPreferences(PACKAGE_NAME + "ITEM_SAVES", Context.MODE_PRIVATE);
         if (mSharedPreferences.getBoolean("FIRST_TIME", true)) {
@@ -1090,7 +1090,7 @@ public class DataItems {
     public static JSONObject getEventUpdate(Context context) {
         String phoneId = getPhoneId(context);
         JSONObject jsonObject = null;
-        SqliteHelper sqliteHelper = new SqliteHelper(context);
+        SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(context);
         List<MailObject> mailObjects = sqliteHelper.getAllMail();
         String queryString = "";
         for (MailObject mailObject : mailObjects) {
@@ -2118,7 +2118,7 @@ public class DataItems {
     }
 
     public static String uriIconItem(ItemObject itemObject, Context context) {
-        SqliteHelper sqliteHelper = new SqliteHelper(context);
+        SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(context);
         List<ItemObject> itemObjects = sqliteHelper.getAllItem();
         Log.e("URI", itemObject.getId() + "__");
 
@@ -2131,7 +2131,7 @@ public class DataItems {
     }
 
     public static String uriIconItemWithId(int id, Context context) {
-        SqliteHelper sqliteHelper = new SqliteHelper(context);
+        SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(context);
         List<ItemObject> itemObjects = sqliteHelper.getAllItem();
         Log.e("URI", id + "__");
 

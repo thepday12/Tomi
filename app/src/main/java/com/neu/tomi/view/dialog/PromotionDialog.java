@@ -101,7 +101,7 @@ public class PromotionDialog extends AppTourDialog {
         public LoadPromotionsGrab(Context context) {
             mContext = context;
             promtionObjects = new ArrayList<>();
-            mSqliteHelper = new SqliteHelper(context);
+            mSqliteHelper = SqliteHelper.getInstanceSQLiteHelper(context);
 
         }
 

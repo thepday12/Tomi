@@ -42,7 +42,7 @@ public class MailDetailActivity extends FragmentActivity {
         tvCountMail = (TextView) findViewById(R.id.tvCountMail);
         btClose = (ImageButton) findViewById(R.id.btClose);
 
-        final SqliteHelper sqliteHelper = new SqliteHelper(MailDetailActivity.this);
+        final SqliteHelper sqliteHelper =SqliteHelper.getInstanceSQLiteHelper(MailDetailActivity.this);
         mMailObjects = sqliteHelper.getAllMail();
         PagerMailAdapter pagerMailAdapter = new PagerMailAdapter(MailDetailActivity.this, getSupportFragmentManager(), mMailObjects);
         vpMail.setAdapter(pagerMailAdapter);

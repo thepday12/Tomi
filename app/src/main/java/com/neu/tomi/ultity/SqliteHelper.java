@@ -29,8 +29,14 @@ public class SqliteHelper extends SQLiteOpenHelper {
     private static final String TABLE_SHARE_NAME = "tblShare";
     private static final String TABLE_FOOD_NAME = "tblFood";
     private Context mContext;
+    private static  SqliteHelper sqliteHelper=null;
 
-    public SqliteHelper(Context context) {
+    public static SqliteHelper getInstanceSQLiteHelper(Context context) {
+       if(sqliteHelper==null)
+           sqliteHelper=new SqliteHelper(context);
+        return sqliteHelper;
+    }
+    private SqliteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
         //Tạo mới hoặc mở kết nối đến DB name

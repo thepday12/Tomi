@@ -80,7 +80,7 @@ public class ShopDialog extends Activity implements Observer, View.OnClickListen
 
     private void init() {
         mContext = ShopDialog.this;
-        mSqliteHelper = new SqliteHelper(mContext);
+        mSqliteHelper = SqliteHelper.getInstanceSQLiteHelper(mContext);
         shopModel = new ShopModel();
         shopModel.addObserver(ShopDialog.this);
         mDataItems = new DataItems(mContext);

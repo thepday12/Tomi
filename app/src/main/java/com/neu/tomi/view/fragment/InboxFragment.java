@@ -57,7 +57,7 @@ public class InboxFragment extends Fragment {
     @Override
     public void onResume() {
         if (isResume) {
-            final SqliteHelper sqliteHelper = new SqliteHelper(mContext);
+            final SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(mContext);
             final List<MailObject> mailObjects = sqliteHelper.getAllMail();
             rvMail.setAdapter(new MailAdapter(mailObjects));
         }
@@ -70,7 +70,7 @@ public class InboxFragment extends Fragment {
 
         rvMail.setHasFixedSize(true);
         rvMail.setLayoutManager(new LinearLayoutManager(mContext));
-        final SqliteHelper sqliteHelper = new SqliteHelper(mContext);
+        final SqliteHelper sqliteHelper = SqliteHelper.getInstanceSQLiteHelper(mContext);
         final List<MailObject> mailObjects = sqliteHelper.getAllMail();
         if (mailObjects.size() > 0) {
             tvNoData.setVisibility(View.GONE);
