@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llLayoutProfile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff00"
+    android:minWidth="320dp"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="16dp"
+    tools:context=".view.dialog.ProfileDialog">
+
+    <Button
+        android:id="@+id/btOkProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_dialog_close"
+        android:text="OK"
+        android:textColor="@android:color/white"
+        android:textSize="16dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btOkProfile"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/rlShareProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="4dp">
+
+                    <TextView
+                        android:id="@+id/tvTitleProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:gravity="center"
+                        android:text="Tomi Of"
+                        android:textColor="@android:color/white"
+                        android:textSize="28dp"
+                        android:textStyle="bold" />
+
+                    <RelativeLayout
+                        android:id="@+id/rlIdUser"
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:layout_below="@+id/tvTitleProfile"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginTop="4dp">
+
+
+                        <TextView
+                            android:id="@+id/tvIdUser"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:singleLine="true"
+                            android:text="Anonymous"
+                            android:textColor="@android:color/white"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rlIdUser"
+                        android:layout_marginBottom="24dp"
+                        android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:layout_width="142dp"
+                            android:layout_height="142dp"
+                            android:background="@drawable/bg_circle">
+
+                            <RelativeLayout
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:layout_centerInParent="true"
+                                android:paddingBottom="4dp"
+                                android:paddingTop="4dp">
+
+                                <ImageView
+                                    android:id="@+id/ivBagProfile"
+                                    android:layout_width="115dp"
+                                    android:layout_height="84dp"
+                                    android:layout_alignParentBottom="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginTop="-31.6dp"
+                                    android:src="@drawable/item_bag06" />
+
+                                <ImageView
+                                    android:layout_width="115dp"
+                                    android:layout_height="58.86dp"
+                                    android:layout_above="@+id/ivBagProfile"
+                                    android:layout_centerHorizontal="true"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/monkey_profile" />
+
+                            </RelativeLayout>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:id="@+id/linearLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="16dp"
+                                android:orientation="vertical">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="32dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvPoint"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginRight="4dp"
+                                        android:layout_marginTop="4dp"
+                                        android:gravity="center_vertical"
+                                        android:singleLine="true"
+                                        android:text="Points: 0"
+                                        android:textColor="@android:color/white" />
+
+                                    <ImageView
+                                        android:layout_width="32dp"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="fitXY"
+                                        android:src="@drawable/item_banana"
+                                        android:visibility="gone" />
+
+                                    <TextView
+                                        android:id="@+id/tvCurrentItem"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_vertical"
+                                        android:text="+100"
+                                        android:textColor="@android:color/white"
+                                        android:textStyle="bold"
+
+                                        android:visibility="gone" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="32dp"
+                                    android:layout_marginTop="4dp"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center_vertical"
+                                        android:text="RANK: "
+                                        android:textColor="@android:color/white" />
+
+                                    <ImageView
+                                        android:id="@+id/ivMedal"
+                                        android:layout_width="32dp"
+                                        android:layout_height="match_parent"
+                                        android:padding="2dp"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/ic_rank_1_5" />
+
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp">
+
+                                    <TextView
+                                        android:id="@+id/tvXpTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginRight="8dp"
+                                        android:gravity="center_vertical"
+                                        android:text="XP: "
+                                        android:textColor="@android:color/white" />
+
+                                    <ProgressBar
+                                        android:id="@+id/pbXPProgress"
+                                        style="?android:attr/progressBarStyleHorizontal"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_toRightOf="@+id/tvXpTitle" />
+
+                                    <TextView
+                                        android:id="@+id/tvLevel"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_below="@+id/pbXPProgress"
+                                        android:layout_marginLeft="2dp"
+                                        android:gravity="center_vertical"
+                                        android:singleLine="true"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="12dp" />
+
+                                    <TextView
+                                        android:id="@+id/tvXPProgress"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_below="@+id/pbXPProgress"
+                                        android:layout_toLeftOf="@+id/tvLevel"
+                                        android:singleLine="true"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="12dp" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tvChangePassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:visibility="gone"
+                    android:text="Change password"
+                    android:textColor="@color/white" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp">
+
+                    <Button
+                        android:id="@+id/btSignOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_dialog_close"
+                        android:paddingLeft="32dp"
+                        android:paddingRight="32dp"
+                        android:text="Sign out"
+                        android:textColor="@android:color/white"
+                        android:textSize="16dp" />
+
+                    <ImageButton
+                        android:id="@+id/btShareImage"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@null"
+                        android:padding="4dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/button_share" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp">
+
+                <EditText
+
+                    android:id="@+id/etCodeProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="8dp"
+                    android:layout_toLeftOf="@+id/btCodeProfile"
+                    android:background="@android:color/white"
+                    android:gravity="center_vertical"
+                    android:singleLine="true" />
+
+                <Button
+                    android:id="@+id/btCodeProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_dialog_close"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="Tomi code"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/ivRename"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="42dp"
+        android:paddingLeft="30dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_rename" />
+</RelativeLayout>

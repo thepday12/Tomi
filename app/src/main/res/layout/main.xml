@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget"
+    android:layout_width="240dp"
+    android:layout_height="200dp">
+
+    <TextView
+        android:id="@+id/textSpeech"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/speech_box"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Hello!"
+        android:textColor="#000000"
+        android:textSize="10dp" />
+
+    <ImageView
+        android:id="@+id/imgBag"
+        android:layout_width="121dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="112dp"
+        android:src="@drawable/item_bag01" />
+
+    <ImageView
+        android:id="@+id/imgAni"
+        android:layout_width="162dp"
+        android:layout_height="180dp"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/monkey_default" />
+
+    <TextView
+        android:id="@+id/textSign"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="30dp"
+        android:text="Grab Tomi\nTreats Now!"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textSize="12dp"
+        android:visibility="gone"
+        android:textStyle="bold" />
+
+</RelativeLayout>

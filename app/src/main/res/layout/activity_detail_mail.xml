@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_detail_mail">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:padding="8dp"
+    android:layout_height="match_parent">
+        <TextView
+            android:layout_marginTop="8dp"
+            android:id="@+id/tvCountMail"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textColor="@android:color/white"
+            />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpMail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tvCountMail" />
+</RelativeLayout>
+    <ImageButton
+        android:id="@+id/btClose"
+        android:scaleType="fitXY"
+        android:background="@null"
+        android:src="@drawable/ic_close"
+        android:layout_alignParentRight="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp" android:padding="8dp"
+        />
+</RelativeLayout>

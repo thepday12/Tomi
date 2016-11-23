@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_mail"
+    android:paddingBottom="24dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:orientation="vertical"
+    android:paddingTop="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="Game"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btCloseMailList"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_dialog_close"
+        android:text="Close"
+        android:visibility="gone"
+        android:layout_marginTop="12dp"
+        android:textColor="@android:color/white" />
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No game"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:id="@+id/tvError"
+        android:textColor="#88ffffff"
+        android:layout_centerInParent="true"/>
+  <GridView
+      android:layout_marginTop="16dp"
+      android:id="@+id/gvGame"
+      android:scrollbars="none"
+      android:numColumns="2"
+      android:columnWidth="130dp"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+</RelativeLayout>
+</LinearLayout>

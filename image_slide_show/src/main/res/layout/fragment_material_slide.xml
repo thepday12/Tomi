@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/slideRelativeLayout">
+    <ImageButton
+        android:background="@null"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:id="@+id/ivShareImage"
+        android:scaleType="fitXY"
+        android:padding="4dp"
+        android:src="@drawable/button_share"
+        android:layout_margin="4dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+    <ImageView
+        android:id="@+id/slideImageView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitCenter"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#66ffffff"
+        android:padding="4dp"
+        android:orientation="vertical">
+    <TextView
+        android:id="@+id/slideTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:text="@string/appTourSlideTitlePlaceholder" />
+
+    <TextView
+        android:id="@+id/slideContentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="4dp"
+        android:lineSpacingExtra="1.5dp"
+        android:maxLines="2"
+        android:lines="2"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:text="@string/appTourSlideContentPlaceholder"/>
+    </LinearLayout>
+</RelativeLayout>

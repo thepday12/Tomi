@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlMainHelp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Layout home-->
+    <LinearLayout
+        android:id="@+id/layoutContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="28dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal">
+
+            <RelativeLayout
+                android:id="@+id/rlFrameTomi"
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/box_preview"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivBag"
+                    android:layout_width="115dp"
+                    android:layout_height="84dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/item_bag07" />
+
+                <ImageView
+                    android:id="@+id/ivMonkeyProfile"
+                    android:layout_width="115dp"
+                    android:layout_height="124dp"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/monkey" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/rlFrameTomi">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvBags"
+                    android:layout_width="115dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/box_bags"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="16dp"
+                    android:scrollbars="none">
+
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvEat"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/box_bananas"
+            android:paddingTop="16dp"
+            android:scrollbars="none" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvDaily"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/box_items"
+            android:paddingTop="16dp"
+            android:scrollbars="none" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivTreasureBox"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/treasurebox" />
+
+    <ImageView
+
+        android:id="@+id/ivOkButton"
+        android:layout_width="72dp"
+        android:layout_height="58dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+
+        android:src="@drawable/ic_shell" />
+
+    <ImageView
+        android:id="@+id/ivShop"
+        android:layout_width="72dp"
+        android:layout_height="58dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/layoutContent"
+
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_properties" />
+
+    <ImageView
+        android:id="@+id/ivMissPromotion"
+        android:layout_width="36dp"
+        android:layout_height="46.3dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_spade" />
+
+    <RelativeLayout
+        android:id="@+id/rlMailBox"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_toRightOf="@+id/ivMissPromotion">
+
+        <ImageView
+            android:id="@+id/ivMailBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_crab" />
+
+        <TextView
+            android:id="@+id/tvNewMail"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_circle_mail"
+            android:gravity="center"
+            android:padding="1dp"
+            android:textColor="@android:color/white"
+            android:textSize="6dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/ivGame"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/rlMailBox"
+        android:scaleType="fitEnd"
+        android:src="@drawable/ic_game" />
+
+    <RelativeLayout
+        android:id="@+id/rlMissBeacon"
+        android:layout_width="240dp"
+        android:layout_height="160dp"
+        android:layout_above="@id/ivMissPromotion"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginLeft="-36dp"
+        android:layout_toRightOf="@+id/ivMissPromotion"
+        android:background="@drawable/ic_frame"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+
+            android:id="@+id/rvBeaconMiss"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            android:paddingBottom="30dp"
+            android:paddingLeft="38dp"
+            android:paddingRight="40dp"
+            android:paddingTop="30dp"
+            android:scrollbars="none" />
+
+        <ProgressBar
+            android:id="@+id/pbGetListBeacon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No data"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btCloseMissBeacon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_close_2" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:background="#88ffffff">
+
+
+        <TextView
+            android:id="@+id/tvPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:textColor="#ffff33"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlDaily"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/ivTarget1">
+
+        <ImageView
+            android:id="@+id/ivDaily"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_daily" />
+
+        <ImageView
+            android:id="@+id/ivIsCheckDailyLogin"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="1dp"
+            android:src="@drawable/ic_ring_daily_login"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <!--END-->
+
+    <ImageView
+        android:id="@+id/ivSlideHelp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/tvOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#aa000000" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivC1"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/hx" />
+
+        <ImageView
+            android:id="@+id/ivC2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC3"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC5"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC6"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC7"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC8"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC9"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+
+            android:src="@drawable/ho" />
+
+        <ImageView
+            android:id="@+id/ivC10"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+
+            android:src="@drawable/ho" />
+    </LinearLayout>
+
+    <!--Help 1-->
+
+    <ImageView
+        android:id="@+id/ivTarget1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="2dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ball_help"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvHelp1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivM1"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/m_1"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="Need a rescue or help?"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivM1"
+        android:layout_width="87dp"
+        android:layout_height="113dp"
+        android:layout_above="@+id/ivTarget1"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="25dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_1"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivMonkey1"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:layout_above="@+id/tvHelp1"
+        android:layout_marginBottom="-22dp"
+        android:layout_marginLeft="32dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/monkey_help1"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvTalk1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivMonkey1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="48dp"
+        android:background="@drawable/ic_talk"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="Welcome to\n Get Tomi!"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="gone" />
+    <!--H2-->
+    <ImageView
+        android:id="@+id/ivTarget2"
+        android:layout_width="188dp"
+        android:layout_height="156dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/rec_help"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvHelp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivM2"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/m_2"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="This is TOMI, your virtual companion! You can check your progress and info here!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivM2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivTarget2"
+        android:layout_marginTop="-48dp"
+        android:layout_toRightOf="@+id/ivTarget2"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_2"
+        android:visibility="gone" />
+    <!--H3-->
+    <ImageView
+        android:id="@+id/ivTarget3"
+        android:layout_width="44dp"
+        android:layout_height="62dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="-8dp"
+        android:layout_marginLeft="4dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ball_help"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/tvHelp3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivM3"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="-72dp"
+        android:layout_marginLeft="-4dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/ivM3"
+        android:background="@drawable/m_3"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="Missed out on some promotions? Use the Spade to dig them out now!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivM3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivTarget3"
+        android:layout_marginLeft="24dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_3"
+        android:visibility="gone" />
+
+    <!--H4-->
+
+    <ImageView
+        android:id="@+id/ivTarget4"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_marginBottom="-4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/ivMissPromotion"
+        android:scaleType="fitXY"
+        android:src="@drawable/ball_help"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/tvHelp4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivM4"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="-4dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/m_4"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivM4"
+        android:layout_width="48dp"
+        android:layout_height="74.6dp"
+        android:layout_above="@+id/ivTarget4"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@+id/ivMissPromotion"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_4"
+        android:visibility="gone" />
+    <!--H5_0-->
+    <ImageView
+        android:id="@+id/ivTarget5_0"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_marginBottom="-4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@+id/rlMailBox"
+        android:scaleType="fitXY"
+        android:src="@drawable/ball_help"
+        android:visibility="gone" />
+
+
+    <ImageView
+        android:id="@+id/ivM5_0"
+        android:layout_width="48dp"
+        android:layout_height="84dp"
+        android:layout_above="@+id/ivTarget5_0"
+        android:layout_marginLeft="-16dp"
+        android:layout_toRightOf="@+id/ivTarget5_0"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_5_0"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvHelp5_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivM5_0"
+        android:background="@drawable/m_5_0"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Feeling bored? Tap the Beach Ball and have some fun under the sun with our games featuring Tomi!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+    <!--H5-->
+    <ImageView
+        android:id="@+id/ivTarget5"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/layoutContent"
+        android:scaleType="fitXY"
+        android:src="@drawable/ball_help"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/tvHelp5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivM5"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="-4dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/m_5"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivM5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutContent"
+        android:layout_marginTop="-8dp"
+        android:layout_toLeftOf="@+id/ivTarget5"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_5"
+        android:visibility="gone" /><!--H6-->
+
+    <ImageView
+        android:id="@+id/ivTarget6"
+        android:layout_width="match_parent"
+        android:layout_height="94dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/rec_6"
+        android:visibility="gone"
+
+        />
+
+
+    <TextView
+        android:id="@+id/tvHelp6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivM6"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="-76dp"
+        android:layout_marginLeft="-38dp"
+        android:layout_toRightOf="@+id/ivM6"
+        android:background="@drawable/m_5"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:text="This Treasure Box safeguards your loot! There’s plenty of room so keep grabbing more promotions!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivM6"
+        android:layout_width="48dp"
+        android:layout_height="117dp"
+        android:layout_above="@+id/ivTarget6"
+        android:layout_marginLeft="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ar_6"
+        android:visibility="gone" />
+
+    <!--H7-->
+    <TextView
+        android:id="@+id/tvHelp7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivTreasureBox"
+        android:background="@drawable/m_7"
+        android:gravity="center"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="To place the widget on the home screen, press and hold on the home screen."
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivMonkey7"
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:layout_above="@+id/tvHelp7"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="-28dp"
+        android:layout_marginRight="32dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/monkey_help7"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivThink7"
+        android:layout_width="208dp"
+        android:layout_height="208dp"
+        android:layout_above="@+id/ivMonkey7"
+        android:layout_marginBottom="-48dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@+id/ivMonkey7"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_think_7"
+        android:visibility="gone" />
+    <!--H8-->
+
+    <ImageView
+        android:id="@+id/ivMonkey8"
+        android:layout_width="208dp"
+        android:layout_height="211dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/help_8"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivThink8"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_above="@+id/ivMonkey8"
+        android:layout_marginLeft="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/talk_8"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvHelp8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivMonkey8"
+        android:layout_marginBottom="32dp"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/ivThink8"
+        android:background="@drawable/m_8"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="16dp"
+        android:text="Choose ‘Widgets’ and select the ‘Tomi’ widget."
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone" />
+    <!--H9-->
+
+
+
+
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tvHelp9B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ivTreasureBox"
+        android:background="@drawable/m_92"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Voila, you did it! Start to enjoy Get Tomi now!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/ivMonkey9"
+        android:layout_width="160dp"
+        android:layout_height="212dp"
+        android:layout_above="@+id/tvHelp9B"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/monkey_9"
+
+         />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tvHelp9T"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/ivMonkey9"
+        android:background="@drawable/m_91"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="Aey Bananaz!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        />
+</RelativeLayout>

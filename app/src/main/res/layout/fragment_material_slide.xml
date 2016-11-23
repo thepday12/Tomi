@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/slideRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <RelativeLayout
+        android:id="@+id/rlLayoutPromotion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/llBonus"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btShowDetail"
+                android:layout_width="48dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/button_detail"
+                android:text="..."
+                android:textColor="#00b050"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/llBonusShow"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvGrab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/button_grab"
+                    android:gravity="center"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:text="GRAB"
+                    android:textColor="#00b050"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvItemBonusGrap"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/llBonus">
+
+            <ImageView
+
+                android:id="@+id/slideImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/tvVisitWebsite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="#ccf7511e"
+                android:minHeight="36dp"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
+                android:text="Visit website"
+                android:textColor="@android:color/white"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+        <ProgressBar
+            android:id="@+id/pbImageProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+        <TextView
+            android:id="@+id/tvWarningNotFoundImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/warning_not_found_promotion"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:background="#BF00"
+            android:paddingTop="4dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:paddingBottom="4dp"
+            android:gravity="center"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tvDayleft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="4dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="2dp"
+            android:textColor="#ffff00"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/ivTotalPromotion"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tvDayleft"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="4dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlLayoutDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/ivPromotionDetail"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter" />
+
+        <RelativeLayout
+            android:id="@+id/rlFooterDetail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_back" />
+
+            <ImageView
+                android:id="@+id/ivDelete"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentRight="true"
+                android:padding="4dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvExpire"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivPromotionDetail"
+            android:layout_marginTop="8dp"
+            android:paddingLeft="8dp"
+            android:textColor="@android:color/white" />
+
+
+        <LinearLayout
+            android:id="@+id/llShare"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_above="@+id/rlFooterDetail"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btShareImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:background="@null"
+                android:padding="4dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/button_share" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvItemBonusShare"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_below="@+id/tvExpire"
+            android:id="@+id/scDescription"
+            android:layout_above="@+id/llShare"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            >
+
+            <WebView
+                android:id="@+id/wvDescriptionDetail"
+                android:layout_width="match_parent"
+                android:background="@android:color/transparent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:textColor="@android:color/white" />
+        </ScrollView>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvExpired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#88ff0000"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="EXPIRED"
+        android:textColor="#88ffffff"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</RelativeLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".view.DailyLoginActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivTitleDaily"
+        android:layout_marginTop="-28dp"
+        android:background="@drawable/bg_dailylogin">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/border_tl" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/border_tr" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@+id/gvDaiLy"
+            android:layout_marginTop="-24dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/border_br" />
+
+        <ImageView
+            android:layout_marginTop="-24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@+id/gvDaiLy"
+            android:src="@drawable/border_bl" />
+
+        <GridView
+            android:id="@+id/gvDaiLy"
+            android:padding="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="48dp"
+            android:background="@drawable/bg_gv_dailylogin"
+            android:numColumns="4" />
+
+        <TextView
+            android:id="@+id/tvDaily"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gvDaiLy"
+            android:layout_marginTop="4dp"
+            android:gravity="center_horizontal"
+            android:paddingBottom="4dp"
+            android:text="Get a free daily gift"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ivTitleDaily"
+        android:layout_width="81dp"
+        android:layout_height="56dp"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:src="@drawable/bg_title_daily_login" />
+</RelativeLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/holo_blue_dark"
+    android:orientation="vertical"
+    tools:context=".view.MessageActivity">
+
+    <RelativeLayout
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+>
+
+        <ImageView
+            android:id="@+id/ivIconTitle"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/monkey_icon" />
+
+        <TextView
+            android:layout_toRightOf="@+id/ivIconTitle"
+            android:id="@+id/tvTitleMessageDetechBeacon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="Tomi"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:padding="2dp"
+            android:id="@+id/btCloseMessageDetechBeacon"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_close" />
+    </RelativeLayout>
+    <TextView
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" android:background="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/tvMessageDetechBeacon"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="4dp"
+        android:text="Discover great offers"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+</LinearLayout>

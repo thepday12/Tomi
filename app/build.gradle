@@ -1,0 +1,55 @@
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'
+//
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'tomi'
+            keyPassword 'neu43210'
+            storeFile file('/Users/theptokim/Desktop/Android/key_tomi/keystore_public.jks')
+            storePassword 'neu43210'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+    defaultConfig {
+        applicationId "com.neu.tomi"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 43
+        versionName "1.093"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+repositories {
+    jcenter();
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    mavenCentral()
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
+    compile 'com.google.android.gms:play-services-plus:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.10.1'
+    compile files('libs/estimote-sdk.jar')
+    compile files('libs/hpp.jar')
+    compile files('libs/http-request-5.4.jar')
+}

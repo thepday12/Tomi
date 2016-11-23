@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="12dp">
+
+    <TextView
+        android:id="@+id/tvTitleMail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:gravity="center"
+        android:text="Inbox"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btCloseMailList"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_dialog_close"
+        android:text="Close"
+        android:visibility="gone"
+        android:layout_marginTop="12dp"
+        android:textColor="@android:color/white" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btCloseMailList"
+        android:layout_below="@id/tvTitleMail"
+        android:padding="2dp"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvMail"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="24sp"
+            android:text="You have no message"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:id="@+id/tvNoData"
+            />
+    </RelativeLayout>
+</RelativeLayout>

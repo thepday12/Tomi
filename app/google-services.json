@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "671941621838",
+    "project_id": "tomi-widget"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671941621838:android:949d46175e537772",
+        "android_client_info": {
+          "package_name": "com.neu.tomi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "671941621838-2n3egcg8o8o0teb106nj5r0k9l7rrktp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neu.tomi",
+            "certificate_hash": "02C338514F0BECC44EEB84B10898749698254D80"
+          }
+        },
+        {
+          "client_id": "671941621838-d5djrr5iiqsaemr56d84tdt396rv3nob.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRMT6gXGhDABX_foXzH2JC4LYL6kKz4uU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

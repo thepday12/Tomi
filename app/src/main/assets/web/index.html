@@ -1,0 +1,270 @@
+<html>
+<head>
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+	<link rel="stylesheet" href="css/swiper.min.css">
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/swiper.min.js"></script>
+	<script src="js/utils.js?2"></script>
+	<style>
+#box_banana {
+width: 100%;
+height: 100%;
+overflow-x: auto;
+overflow-y: hidden;
+white-space: nowrap;
+}
+#box_items img{height:100%}
+.banana{height:90%}
+.bag{width:100%}
+*
+{
+	font-family:Arial;
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    /*IE10*/
+    -ms-user-select: none;
+    user-select: none;
+
+    /*You just need this if you are only concerned with android and not desktop browsers.*/
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}   
+.swiper-container{width:100%;height:100%;}.swiper-slide{text-align:center;font-size:18px;background:#fff;display:-webkit-box;display:-ms-flexbox;display:-webkit-flex;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;-webkit-align-items:center;align-items:center;}
+.swiper-container-horizontal>.swiper-pagination {
+    bottom:none;
+	top:10px;
+}
+.swiper-slide img{height:100%;width:100%}
+
+#txtBananas,#txtPoints{color:yellow;font-size:9pt;}
+.boxheader {color:#2E75B6;font-size:14pt;font-weight:bold}
+#boxTreasure{display:none;z-index:100;position:absolute;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,0.5)}
+#boxTreasureContent{position:absolute;width:80%;height:80%;left:50%;top:50px;margin-left:-40%;border-radius:10px;background:#e0e0e0;box-shadow:0px 5px 20px rgba(0,0,0,0.6);}
+#boxTreasureContentButtons{position:absolute;bottom:0;width:100%;line-height:50px;text-align:center;height:50px;color:white;background:#888888;border-radius:0px 0px 8px 8px;}
+#boxTreasureContentTitle{position:absolute;top:0;width:100%;line-height:50px;text-align:center;height:50px;color:white;font-size:14pt;background:#cb7f0d;border-radius:8px 8px 0px 0px;}
+#box_saved_promotion{position:relative;top:50px;border:0;margin:0;width:100%;height:80%}
+#barHeader{position:absolute;width:100%;height:25px;line-height:25px;background:rgba(0,0,0,0.3)}
+#main_container{width:100%;height:100%;background-image: url('img/bg.png');background-size: 100% 100%;background-repeat: none;}
+#box_preview{position:absolute;left:8%;top:11.6%;width:37.36%;height:20.86%;background-image: url('img/box_preview.png');background-size: 100% 100%;background-repeat: none;padding:0%;box-sizing:border-box}
+#box_bags{position:absolute;left:51%;top:11.6%;width:22%;height:20.86%;background-image: url('img/box_bags.png');background-size: 100% 100%;background-repeat: none;padding-left:6px;padding-right:6px;padding-top:20px;padding-bottom:10px;box-sizing:border-box}
+#box_banana_container{position:absolute;left:10%;top:38%;width:80%;height:8.5%;background-image: url('img/box_bananas.png');background-size: 100% 100%;background-repeat: none;padding-left:6px;padding-right:6px;padding-top:10px;padding-bottom:2px;box-sizing:border-box}
+#box_items_container{position:absolute;left:10%;top:48%;width:80%;height:8.5%;background-image: url('img/box_items.png');background-size: 100% 100%;background-repeat: none;padding-left:6px;padding-right:6px;padding-top:12px;padding-bottom:8px;box-sizing:border-box}
+	</style>
+</head>
+<body style="margin:0px">
+<div id="boxTreasure">
+	<div id="boxTreasureContent">
+		<div id="boxTreasureContentButtons">
+		<table width="100%" height="100%" cellspacing="0" cellpadding="0">
+			<tr>
+			<td align="center" style="color:white" width="33%" onclick="deletePromotion()">Delete</td>
+			<td align="center" style="background:#33b5e8;color:white" onclick="usePromotion()">Use</td>
+			<td align="center" style="color:white" width="33%" onclick="closeTreasureBox()">Close</td>
+			</tr>
+		</table>
+		</div>
+		<div id="boxTreasureContentTitle">Saved Promotions <span id="txtCountSavedPromotion"></span></div>
+		<div id="box_saved_promotion">
+			<div class="swiper-container">
+			<div class="swiper-wrapper">
+			</div>			 
+			<div class="swiper-pagination"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="barHeader">
+<table style="width:100%;height:100%" cellpadding="0" cellspacing="0"><tr>
+<td width="20"><img src="img/item_banana.png" valign="middle" style="height:21px;margin:2px"></td>
+<td><span id="txtBananas">20</span></td>
+<td align="right" style="padding-right:5px"><span id="txtPoints">200 pts</span></td>
+</tr></table>
+</div>
+<div id="main_container">
+	<div id="box_preview">
+		<img id="img_preview_bag" src="img/item_bag01.png" style="position:absolute;bottom:6%;width:80%;margin:0% 10% 0% 10%">
+		<img id="img_preview_monkey" src="img/monkey.png" style="position:absolute;bottom:6%;width:80%;margin:0% 10% 0% 10%">
+	</div>
+	<div id="box_bags">
+		<div style="width:100%;height:100%;overflow-y:auto;overflow-x:hidden;box-sizing:border-box">
+			<img id="img_bag1" class="bag" bag_index="1" src="img/item_bag01.png">
+			<img id="img_bag2" class="bag" bag_index="2" src="img/item_bag02.png">
+			<img id="img_bag3" class="bag" bag_index="3" src="img/item_bag03.png">
+			<img id="img_bag4" class="bag" bag_index="4" src="img/item_bag04.png">
+			<img id="img_bag5" class="bag" bag_index="5" src="img/item_bag05.png">
+			<img id="img_bag6" class="bag" bag_index="6" src="img/item_bag06.png">
+		</div>
+	</div>
+	<div id="box_banana_container">
+		<div id="box_banana">
+		</div>
+	</div>
+	<div id="box_items_container">
+		<div id="box_items">
+			<img class="items" onclick="doMonkeyAction('bottle')" src="img/item_bottle.png">
+			<img class="items" onclick="doMonkeyAction('tambourine')" src="img/item_tambourine.png">
+		</div>
+	</div>
+	<img id="buttonTreasureBox" onclick="openTreasureBox()" src="img/treasurebox.png" style="position:absolute;bottom:0;width:100%;height:15.31%">
+	<div style="position:absolute;bottom:16%;width:100%;text-align:center"><img onclick="clickOK()" height="90" src="img/shell.png" ></div>
+</div>
+<style>
+</style>
+<script>
+var bag_index=1;
+var vPoints=0, vBananas=0;
+function clickOK(){
+	Android.setBag(Number(bag_index));
+}
+function setBag(index){
+	bag_index=index;
+	$("#img_preview_bag").attr("src","img/item_bag0"+bag_index+".png");
+}
+function setPoints(points){
+	vPoints=points;
+	$("#txtPoints").html(points+" pts");
+}
+function setBananas(count){
+	vBananas=count;
+	$("#txtBananas").html(count);
+	$("#box_banana").empty();
+	for(var i=0;i<(count>10?10:count);i++){
+		var banana=$('<img class="banana" src="img/item_banana.png">')
+			.click(function(){doMonkeyAction("banana");})
+		;
+		$("#box_banana").append(banana);
+	}
+}
+var vPromotionIDs="";
+var swiper;
+function setPromotions(s)
+{
+	vPromotionIDs=s;
+	if(vPromotionIDs==""){
+		if(swiper!=null) {
+			swiper.destroy();
+			swiper=null;
+		}
+		$("#buttonTreasureBox").hide();
+		return;
+	}
+	$("#buttonTreasureBox").show();
+	var b=$("#boxTreasure").is(":visible");
+	if(!b){
+		$("#boxTreasure").css("left","-1000px");
+		$("#boxTreasure").show();
+	}
+	var ps=s.split(",");
+	for(var i=0;i<ps.length;i++) if(ps[i]!=""){
+		var promo=$("<div class='swiper-slide' promo_id='"+ps[i]+"'><img src='http://neublick.com/tomi/promotion/adv_img/slider/"+ps[i]+".jpg'></div>");
+		$(".swiper-wrapper").append(promo);
+	}
+	if(swiper!=null) swiper.destroy();
+	swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        paginationClickable: false,
+		onSlideChangeStart:function(){}
+    });
+	updatePromotionCount();
+	if(!b){
+		$("#boxTreasure").hide();
+		$("#boxTreasure").css("left","0px");
+	}
+	var h=$(window).height()*0.8;
+	var t=$(window).height()*0.1;
+	$("#boxTreasureContent").css({height:h,top:t});
+	$("#box_saved_promotion").height($("#boxTreasureContent").height()-100);
+}
+function doMonkeyAction(action,param){
+	Android.doMonkeyAction(action);
+}
+function openTreasureBox(){
+	//$("#boxTreasure").fadeIn();
+	$("#iframePromo").attr("src","http://neublick.com/tomi/promotion/?promo="+vPromotionIDs);
+	$("#boxTreasure").show();
+}
+function closeTreasureBox()
+{
+	$("#boxTreasure").hide();
+	$("#iframePromo").attr("src","");
+}
+function deletePromotion()
+{
+	showDialog("Confirm","Do you want to delete this promotion?","Yes","Cancel",
+		function(){
+			hideDialog();
+			var id=$(swiper.slides[swiper.activeIndex]).attr("promo_id");
+			if(id>=0){
+				swiper.removeSlide(swiper.activeIndex);
+				updatePromotionCount();
+				vPromotionIDs=","+vPromotionIDs+",";
+				vPromotionIDs=vPromotionIDs.replace(","+id+",",",");
+				vPromotionIDs=vPromotionIDs.substr(1,vPromotionIDs.length-2);
+				//messageBox("Promotion deleted");
+				checkPromotions();
+				Android.deletePromotion(id);
+			}
+		},
+		function(){hideDialog();}
+	);
+}
+function checkPromotions(){
+	if(vPromotionIDs=="" || vPromotionIDs=="," || vPromotionIDs==",,"){
+		vPromotionIDs="";
+		$("#boxTreasure").hide();
+		$("#buttonTreasureBox").hide();
+	}
+}
+function updatePromotionCount(){
+	$("#txtCountSavedPromotion").html((swiper.activeIndex+1) +"/"+ swiper.slides.length);
+}
+function usePromotion()
+{
+	showDialog("Confirm","Do you want to use this promotion? It will be removed and you will get 2 bananas and 2 points.","Yes","Cancel",
+		function(){
+			hideDialog();
+			var id=$(swiper.slides[swiper.activeIndex]).attr("promo_id");
+			if(id>=0){
+				swiper.removeSlide(swiper.activeIndex);
+				updatePromotionCount();
+				vPromotionIDs=","+vPromotionIDs+",";
+				vPromotionIDs=vPromotionIDs.replace(","+id+",",",");
+				vPromotionIDs=vPromotionIDs.substr(1,vPromotionIDs.length-2);
+				setBananas(vBananas+2);
+				setPoints(vPoints+2);
+				checkPromotions();
+				Android.usePromotion(id);
+			}
+		},
+		function(){hideDialog();}
+	);
+}
+function grabPromotion(id)
+{
+	showDialog("Confirm","Do you want to grab this promotion? You will get 1 banana and 1 point.","Yes","Cancel",
+		function(){
+			if(id>=0){
+				hideDialog();
+				vPromotionIDs+=(vPromotionIDs==""?"":",")+vPromotionIDs;
+				setPromotions(vPromotionIDs);
+				setBananas(vBananas+1);
+				setPoints(vPoints+1);
+				Android.grabPromotion(id);
+			}
+		},
+		function(){hideDialog();}
+	);
+}
+$(document).ready(function()
+{
+	$(".bag").click(function(){
+		setBag($(this).attr("bag_index"));
+	});
+	//setBananas(30);
+	//setPoints(100);
+	//setPromotions("1,2,3,4,5,6");
+});
+</script>
+</body>
+</html>

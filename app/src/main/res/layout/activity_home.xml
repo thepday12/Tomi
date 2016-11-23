@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlBgTheme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context=".view.HomeActivity">
+
+    <LinearLayout
+        android:id="@+id/layoutContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="28dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+            <RelativeLayout
+                android:layout_alignParentLeft="true"
+                android:id="@+id/rlFrameTomi"
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/box_preview"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivBag"
+                    android:layout_width="115dp"
+                    android:layout_height="84dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/item_bag07" />
+
+                <ImageView
+                    android:id="@+id/ivMonkeyProfile"
+                    android:layout_width="115dp"
+                    android:layout_height="124dp"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/monkey" />
+
+            </RelativeLayout>
+<RelativeLayout
+    android:layout_toEndOf="@+id/rlFrameTomi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:layout_alignParentRight="true"
+                android:id="@+id/rvBags"
+                android:layout_width="115dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/box_bags"
+                android:paddingBottom="8dp"
+                android:paddingTop="16dp"
+                android:scrollbars="none">
+
+            </android.support.v7.widget.RecyclerView>
+</RelativeLayout>
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvEat"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/box_bananas"
+            android:paddingTop="16dp"
+            android:scrollbars="none" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvDaily"
+            android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/box_items"
+            android:paddingTop="16dp"
+            android:scrollbars="none" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivTreasureBox"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/treasurebox" />
+
+    <ImageView
+
+        android:id="@+id/ivOkButton"
+        android:layout_width="72dp"
+        android:layout_height="58dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+
+        android:src="@drawable/ic_shell" />
+
+    <ImageView
+        android:id="@+id/ivShop"
+        android:layout_width="72dp"
+        android:layout_height="58dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/layoutContent"
+
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_properties" />
+
+    <ImageView
+        android:id="@+id/ivMissPromotion"
+        android:layout_width="36dp"
+        android:layout_height="46.3dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_spade" />
+
+    <RelativeLayout
+        android:id="@+id/rlMailBox"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_toRightOf="@+id/ivMissPromotion">
+
+        <ImageView
+            android:id="@+id/ivMailBox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_crab" />
+
+        <TextView
+            android:id="@+id/tvNewMail"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bg_circle_mail"
+            android:gravity="center"
+            android:padding="1dp"
+            android:textColor="@android:color/white"
+            android:textSize="6dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+        <ImageView
+            android:layout_above="@+id/ivTreasureBox"
+            android:layout_toRightOf="@+id/rlMailBox"
+            android:id="@+id/ivGame"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitEnd"
+            android:src="@drawable/ic_game" />
+    <RelativeLayout
+        android:id="@+id/rlMissBeacon"
+        android:layout_width="240dp"
+        android:layout_height="160dp"
+        android:layout_above="@id/ivMissPromotion"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginLeft="-36dp"
+        android:layout_toRightOf="@+id/ivMissPromotion"
+        android:background="@drawable/ic_frame"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+
+            android:id="@+id/rvBeaconMiss"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            android:paddingBottom="30dp"
+            android:paddingLeft="38dp"
+            android:paddingRight="40dp"
+            android:paddingTop="30dp"
+            android:scrollbars="none" />
+
+        <ProgressBar
+            android:id="@+id/pbGetListBeacon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No data"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btCloseMissBeacon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_close_2" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:background="#88ffffff">
+
+
+        <TextView
+            android:id="@+id/tvPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:textColor="#ffff33"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ivShowSlideHelp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/ivTreasureBox"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="2dp"
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_help" />
+
+    <RelativeLayout
+        android:id="@+id/rlDaily"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/ivShowSlideHelp">
+
+        <ImageView
+            android:id="@+id/ivDaily"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_daily"/>
+        <ImageView
+            android:layout_width="16dp"
+            android:id="@+id/ivIsCheckDailyLogin"
+            android:layout_margin="1dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_ring_daily_login"
+            android:layout_height="16dp" />
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#09a6d2</color>
+    <color name="colorPrimaryDark">#066e8b</color>
+    <color name="colorAccent">#05bfd6</color>
+    <color name="bg_daily">#ffffff</color>
+    <color name="bg_gv_daily">#cc1c611d</color>
+    <color name="checked_daily">#f52a2a</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="title_sign_in">#409aa5</color>
+</resources>

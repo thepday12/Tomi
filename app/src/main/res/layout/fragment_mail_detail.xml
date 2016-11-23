@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvMailTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textColor="#4776ce"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvMailDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@android:color/white"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btMailLink"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="Tell us"
+            android:background="@drawable/button_dialog_close"
+            android:textColor="@android:color/white" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btMailLink"
+            android:background="@drawable/bg_mail_content"
+            android:layout_marginBottom="8dp"
+            android:scrollbars="none">
+
+            <TextView
+                android:id="@+id/tvMailContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#4776ce"
+                android:textIsSelectable="true"
+                android:textSize="14sp" />
+        </ScrollView>
+
+
+    </RelativeLayout>
+</LinearLayout>

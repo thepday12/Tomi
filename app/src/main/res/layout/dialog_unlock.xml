@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+
+    android:paddingTop="24dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/llUnlockLayout">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textColor="@android:color/white"
+    android:textStyle="bold"
+    android:textSize="28sp"
+    android:text="Bonus next level"
+    />
+    <RelativeLayout
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <ImageView
+            android:id="@+id/ivItemUnlock"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/item_bag01"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_circle"
+            android:padding="8dp"
+            android:scaleType="fitCenter" />
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvItemUnlock"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:text="+15 Points"
+            android:typeface="serif"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/tvDescriptionUnlock"
+        android:text="U can by item with points"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/btOkUnlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/button_dialog_close"
+        android:text="OK"
+        android:textColor="@android:color/white"
+        android:textSize="16dp" />
+</LinearLayout>
+</RelativeLayout>

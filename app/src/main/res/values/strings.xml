@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Tomi the monkey</string>
+    <string name="facebook_app_id">1497405373897298</string>
+    <string name="app_name">Get Tomi</string>
+    <string name="widget_name">Get Tomi widget</string>
+    <string name="appTourSkipButton">Skip</string>
+    <string name="appTourNextButton">Next</string>
+    <string name="appTourDoneButton">Done</string>
+    <string name="next_level_default"></string>
+    <string name="next_level_2">You get 10 PTs</string>
+    <string name="next_level_3">Open action drink</string>
+    <string name="next_level_4">You get 10PTs</string>
+    <string name="next_level_5">Open new bag</string>
+    <string name="next_level_6">Tomi can tambourine action</string>
+    <string name="next_level_7">You get 50PTs</string>
+    <string name="next_level_8">You get 50PTs</string>
+    <string name="next_level_9">Open new bag</string>
+    <string name="next_level_10">You get 100PTs</string>
+    <string name="next_level_11">Open tambourine action</string>
+    <string name="next_level_13">Open new bag</string>
+
+    <string name="next_level_15">You get 50PTs</string>
+    <string name="next_level_17">Open new bag</string>
+    <string name="next_level_18">You get 20PTs</string>
+    <string name="next_level_19">You get 100PTs</string>
+    <string name="title_activity_shop_dialog">ShopDialog</string>
+    <string name="title_activity_daily_dialog"></string>
+    <string name="warning_use">This single-use gift certificate can only be redeemed at the cashier upon payment. Once redeemed, the gift certificate will no longer be available. Would you like to redeem now? Otherwise, please select “Cancel”.</string>
+    <string name="warning_delete"></string>
+    <string name="warning_exit">Have you completed your redemption?Otherwise, please select “Cancel”.</string>
+    <string name="about_title">&lt;u>DID YOU KNOW?&lt;u></string>
+    <string name="about_content">\"Tomi\" means \"wealth, abundance\" in Japanese!So, NEUBLICK has introduced this new app,GET TOMI, to bring you an abundance of wealth!Tomi is an on-screen companion that sniffs out the best deals for users who can’t wait to get it and share it with their friends.</string>
+    <string name="warning_sign_out">If you sign out old data deleted. Click \"restore data\" when you login again </string>
+    <!--target-->
+    <string name="target_help_title">Need a rescue or help? </string>
+    <string name="target_help_content"></string>
+
+    <string name="target_profile_title">Profile</string>
+    <string name="target_profile_content">This is TOMI, your virtual companion! You can check your progress and info here!</string>
+
+    <string name="target_spade_title">Missed out on some promotions?</string>
+    <string name="target_spade_content">Click Spade to dig them out</string>
+
+    <string name="target_crab_title">Event and info</string>
+    <string name="target_crab_content">The Crab stores information and uses its giant claws to bring all the important news to you! Be careful though…</string>
+
+    <string name="target_shop_title">Shop</string>
+    <string name="target_shop_content">Visit the Starfish store to get more goodies for TOMI! Keep calm and shop!</string>
+    <string name="target_treasure_title">Promotions</string>
+    <string name="target_treasure_content">This Treasure Box safeguards your loot! There’s plenty of room so keep grabbing more promotions!</string>
+    <string name="error_null_value">Can\'t connect to server</string>
+
+    <!--Error signIn-->
+    <string name="edit_text_null_value">This field is required</string>
+    <string name="edit_text_password_short">This password is too short</string>
+    <string name="edit_text_password_not_match">Passwords do not match</string>
+    <string name="edit_text_password_is_used">New password must be different than your old password</string>
+    <string name="edit_text_email_invalid">This email address is invalid</string>
+    <string name="edit_text_email_Exist">That email is taken. Try another.</string>
+    <!--String warning-->
+    <string name="warning_not_found_promotion">Please enable internet connection to download image</string>
+
+</resources>
