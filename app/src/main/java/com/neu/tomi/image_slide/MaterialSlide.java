@@ -513,7 +513,7 @@ public class MaterialSlide extends Fragment {
 
     private void promotionExits() {
         if (mSqliteHelper.promotionExist(mPromtionObject.getPromotionId()) && isTreat == false) {
-//            llBonusShow.setVisibility(View.GONE);
+            llBonusShow.setVisibility(View.GONE);
         }
     }
 
@@ -1060,12 +1060,15 @@ public class MaterialSlide extends Fragment {
                         }
 
                     } else {
+                        mDialog.dismiss();
                         Toast.makeText(mContext, jsonObject.getString("error_description"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    mDialog.dismiss();
+                    Toast.makeText(mContext, "Connect server fail", Toast.LENGTH_SHORT).show();
                 }
             } else {
+                mDialog.dismiss();
                 Toast.makeText(mContext, "Connect server fail", Toast.LENGTH_SHORT).show();
             }
             super.onPostExecute(jsonObject);

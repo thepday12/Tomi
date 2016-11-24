@@ -4,85 +4,165 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_code"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".view.dialog.RenameDialog">
+    android:paddingTop="16dp"
+    >
+
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="You qualify for lucky draw to win ipad"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="18dp"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="Congratulations!"
+        android:textColor="@color/info_color"
+        android:textSize="32dp"
         android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="You have qualified for \nour lucky draw to win \nan iPad Mini!"
+        android:textColor="#1b1464"
+        android:textSize="22dp"
+        android:textStyle="bold"/>
+
     <LinearLayout
-        android:layout_width="match_parent"
         android:id="@+id/llContent"
-        android:layout_height="wrap_content" android:orientation="vertical">
-    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white">
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <EditText
-            android:id="@+id/etName"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:capitalize="words"
-            android:hint="Name"
-            android:textColor="@color/white"
-            android:singleLine="true"/>
+            android:layout_height="57dp">
 
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/et_info"
+                android:capitalize="words"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:singleLine="true"
+                android:textColor="@color/info_color"
+                android:textSize="16dp"/>
 
-    <android.support.design.widget.TextInputLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:background="@color/white"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="Name"
+                android:textColor="@color/black"
+                android:textSize="18dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:layout_marginTop="12dp">
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/et_info"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:singleLine="true"
+                android:textColor="@color/info_color"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:background="@color/white"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="Email"
+                android:textColor="@color/black"
+                android:textSize="18dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:layout_marginTop="12dp">
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/et_info"
+                android:inputType="phone"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:singleLine="true"
+                android:textColor="@color/info_color"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:background="@color/white"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:text="Phone"
+                android:textColor="@color/black"
+                android:textSize="18dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white">
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp">
 
-        <EditText
-            android:id="@+id/etEmail"
+        <Button
+            android:id="@+id/btOk"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_info"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:textColor="@color/white"
-            android:singleLine="true"/>
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/btOk"
+            android:paddingTop="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_bottom_left"/>
 
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white">
-
-        <EditText
-            android:id="@+id/etPhone"
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone"
-            android:textColor="@color/white"
-            android:inputType="phone"
-            android:singleLine="true"/>
-
-    </android.support.design.widget.TextInputLayout>
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/btOk"
+            android:paddingTop="8dp"
+            android:scaleType="fitEnd"
+            android:src="@drawable/ic_bottom_right"/>
+    </RelativeLayout>
 </LinearLayout>
-    <Button
-        android:id="@+id/btOk"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_dialog_close"
-        android:text="SUBMIT"
-        android:textColor="@android:color/white"
-        android:textSize="16dp"/>
 
-</LinearLayout>
