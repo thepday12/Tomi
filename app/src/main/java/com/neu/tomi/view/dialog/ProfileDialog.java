@@ -353,8 +353,6 @@ public class ProfileDialog extends FragmentActivity implements GoogleApiClient.C
                 }
                 if(mGoogleApiClient.isConnected()) {
                     try {
-
-
                         Auth.GoogleSignInApi.signOut(mGoogleApiClient)
                                 .setResultCallback(
                                         new ResultCallback<Status>() {
@@ -549,40 +547,30 @@ public class ProfileDialog extends FragmentActivity implements GoogleApiClient.C
                     PackageManager pm = context.getPackageManager();
                     List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
 
+                    boolean shareStatus =false;
                     for (final ResolveInfo app : activityList) {
-
-
                         if ((app.activityInfo.packageName).equals(applicationObject.getPacketName())) {
-
                             final ActivityInfo activity = app.activityInfo;
                             final ComponentName name = new ComponentName(activity.applicationInfo.packageName, activity.name);
-//                            if (app.activityInfo.packageName.contains("facebook")) {
-//
-//                                if (ShareDialog.canShow(ShareLinkContent.class)) {
-//                                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
-//                                            .setContentTitle("Hello Facebook")
-//                                            .setContentDescription(
-//                                                    "The 'Hello Facebook' sample  showcases simple Facebook integration")
-//                                            .setContentUrl(Uri.parse("https://play.google.com/store"))
-//                                                    .setImageUrl(Uri.parse("http://joombig.com/demo-extensions1/images/gallery_slider/Swan_large.jpg"))
-//                                            .build();
-//                                    shareDialog.show(linkContent);
-//                                }
-//
-//                            } else {
 
+
+//                            ComponentName name = new ComponentName(applicationObject.getPacketName(), applicationObject.getPacketName());
+//                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+//                            shareIntent.setType("image/png");
                             shareIntent.setComponent(name);
-                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             startActivityForResult(shareIntent, Global.SHARE_REQUEST_CODE);
-//                            }
-
-
+                            shareStatus=true;
                             dialog.dismiss();
                             break;
 
                         }
+                    }
+                    if(!shareStatus){
+                        Toast.makeText(ProfileDialog.this, R.string.error_share, Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -717,7 +705,7 @@ public class ProfileDialog extends FragmentActivity implements GoogleApiClient.C
 
             for (PromtionObject promtionObject : mPromtionObjects) {
                 try {
-                    Global.buyPromotion(promtionObject, mDataItems.getSQLiteHelper());
+                    Global.buyPromotion(promtionObject, mDataItems.getSQLiteHelper(),0,0);
                 } catch (Exception e) {
                 }
             }

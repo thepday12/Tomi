@@ -17,8 +17,8 @@ android {
         applicationId "com.neu.tomi"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 44
-        versionName "1.094"
+        versionCode 48
+        versionName "1.11"
     }
     buildTypes {
         release {
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
@@ -49,7 +49,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-plus:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.10.1'
-    compile files('libs/estimote-sdk.jar')
+    compile 'com.estimote:sdk:0.13.0@aar'
     compile files('libs/hpp.jar')
     compile files('libs/http-request-5.4.jar')
 }

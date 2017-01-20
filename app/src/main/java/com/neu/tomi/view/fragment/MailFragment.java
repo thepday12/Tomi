@@ -38,6 +38,7 @@ public class MailFragment extends Fragment {
         args.putString("MAIL_CONTENT", mailObject.getContent());
         args.putString("MAIL_DATE", mailObject.getDate());
         args.putString("MAIL_LINK", mailObject.getLink());
+        args.putString("MAIL_LINK_CAPTION", mailObject.getLinkCaption());
         args.putString("MAIL_TITLE", mailObject.getTitle());
         args.putInt("MAIL_TYPE", mailObject.getLinkType());
         mailFragment.setArguments(args);
@@ -57,15 +58,15 @@ public class MailFragment extends Fragment {
         tvMailDate = (TextView) rootView.findViewById(R.id.tvMailDate);
         tvMailContent = (TextView) rootView.findViewById(R.id.tvMailContent);
         btMailLink = (Button) rootView.findViewById(R.id.btMailLink);
-
         final String mailId = getArguments().getString("MAIL_ID");
         String mailContent = getArguments().getString("MAIL_CONTENT");
         String mailDate = getArguments().getString("MAIL_DATE");
         final String mailLink = getArguments().getString("MAIL_LINK");
+        final String mailLinkCaption = getArguments().getString("MAIL_LINK_CAPTION");
         String mailTitle = getArguments().getString("MAIL_TITLE");
         final int mailType = getArguments().getInt("MAIL_TYPE", 9);
 
-
+        btMailLink.setText(mailLinkCaption);
         tvMailTitle.setText(mailTitle);
         tvMailDate.setText("Date: " + mailDate);
         tvMailContent.setText(Html.fromHtml(mailContent));
@@ -146,6 +147,20 @@ public class MailFragment extends Fragment {
                     }
                 });
                 break;
+            }case 10: {
+                btMailLink.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String beaconInfo=mailLink;
+                        Intent intent = new Intent(context, PromotionDialog.class);
+                        intent.putExtra("TREAT", false);
+                        intent.putExtra("MISS", true);
+                        intent.putExtra("WID", 0);
+                        intent.putExtra("INFO", beaconInfo);
+                        startActivity(intent);
+                    }
+                });
+                break;
             }
             default: {
                 if (mailLink != null) {
@@ -161,9 +176,12 @@ public class MailFragment extends Fragment {
                                     intent.putExtra(DataItems.STATUS_REDIRECT_KEY, true);
                                     startActivity(intent);
                                 } else {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setData(Uri.parse(link));
-                                    startActivity(intent);
+                                    Uri uri=Uri.parse(link);
+                                    if(uri!=null) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        intent.setData(uri);
+                                        startActivity(intent);
+                                    }
                                 }
 
                             }

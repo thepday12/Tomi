@@ -650,12 +650,14 @@ public class TomiProvider extends AppWidgetProvider {
             if (promtionObjects.size() > 0) {
                 boolean isExpire = false;
                 for (PromtionObject item : promtionObjects) {
-                    if (Global.checkDayLessThan(3, item.getEndTime())) {
-                        if (Global.checkDayLessThan(-2, item.getEndTime())) {
-                            mSqliteHelper.deletePromotion(item.getPromotionId());
-                            clearNotificationExpire(mContext);
-                        }else
-                            isExpire = true;
+                    if(isValidShowNotificationExpired(item.getExpiredStatus())) {
+                        if (Global.checkDayLessThan(3, item.getEndTime())) {
+                            if (Global.checkDayLessThan(-2, item.getEndTime())) {
+                                mSqliteHelper.deletePromotion(item.getPromotionId());
+                                clearNotificationExpire(mContext);
+                            } else
+                                isExpire = true;
+                        }
                     }
                 }
                 if (isExpire)
@@ -663,6 +665,13 @@ public class TomiProvider extends AppWidgetProvider {
             }
             super.onPostExecute(promtionObjects);
         }
+    }
+
+    private boolean isValidShowNotificationExpired(int expiredStatus) {
+        if(expiredStatus == 3 || expiredStatus == 5 || expiredStatus == 6 || expiredStatus == 7)
+            return false;
+        else
+            return true;
     }
 
     private void showNotification(Context context) {

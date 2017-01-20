@@ -106,9 +106,7 @@ public class HomeActivity extends Activity {
 //        Global.clearNotificationDetectBeacon(HomeActivity.this);
 
 
-
         setContentView(R.layout.activity_home);
-
 
 
         mDataItems = new DataItems(HomeActivity.this);
@@ -132,17 +130,21 @@ public class HomeActivity extends Activity {
             }
         }
         if (Global.isBeaconDetected) {
+            EXTRA_BEACON_INFO = Global.lastBeaconInfo;
+        }
+        if (EXTRA_BEACON_INFO != null && !EXTRA_BEACON_INFO.isEmpty()) {
             if (HttpRequest.isOnline(HomeActivity.this)) {
                 Intent intent = new Intent(HomeActivity.this, PromotionDialog.class);
                 intent.putExtra("TREAT", false);
                 intent.putExtra("WID", EXTRA_APPWIDGET_ID);
-                intent.putExtra("INFO", Global.lastBeaconInfo);
+                intent.putExtra("INFO", EXTRA_BEACON_INFO);
                 startActivity(intent);
             } else {
                 HttpRequest.showDialogInternetSetting(HomeActivity.this);
                 new CheckConnect().execute();
             }
         }
+
 
         if (mDataItems.isLostData()) {
                 showDialogSyncData();
@@ -414,6 +416,7 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String beaconInfo = mDataItems.getListBeaconDetect();
+//                String beaconInfo = "28788_888";
                 if (beaconInfo.isEmpty()) {
                     Toast.makeText(HomeActivity.this, "You did not miss anything", Toast.LENGTH_SHORT).show();
                 } else {
@@ -759,7 +762,7 @@ public class HomeActivity extends Activity {
                 Intent intent = new Intent(HomeActivity.this, PromotionDialog.class);
                 intent.putExtra("TREAT", false);
                 intent.putExtra("WID", EXTRA_APPWIDGET_ID);
-                intent.putExtra("INFO", Global.lastBeaconInfo);
+                intent.putExtra("INFO", EXTRA_BEACON_INFO);
                 startActivity(intent);
             } else {
                 finish();
@@ -936,7 +939,7 @@ public class HomeActivity extends Activity {
 
             for (PromtionObject promtionObject : mPromtionObjects) {
                 try {
-                    Global.savePromotion(promtionObject, mSqliteHelper);
+                    Global.savePromotion(promtionObject, mSqliteHelper,0,0);
                 } catch (Exception e) {
                 }
             }
@@ -1047,7 +1050,7 @@ public class HomeActivity extends Activity {
             }
 
             for (PromtionObject item : mPromtionObjects) {
-                Global.savePromotion(item, mSqliteHelper);
+                Global.savePromotion(item, mSqliteHelper,0,0);
             }
             return null;
         }

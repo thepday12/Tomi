@@ -58,7 +58,12 @@ public class UsePromotionActivity extends AppCompatActivity {
     private ProgressDialog mDialog;
     private int codeType;
     private boolean isLoaded = false;
+    private boolean isUsePromotion = false;
     private Dialog dialogCongratulations;
+    private String bonusPromotions;
+    private String errDescription;
+    private PromtionObject mPromtionObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +76,7 @@ public class UsePromotionActivity extends AppCompatActivity {
         beaconId = intent.getStringExtra(DataItems.BEACON_ID_KEY);
         codeType = intent.getIntExtra(DataItems.PROMOTION_TYPE_CODE_KEY, 0);
         if (codeType == 3) {
-            new DeletePromotion(UsePromotionActivity.this, true, "").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new DeletePromotion(UsePromotionActivity.this, true, "",false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             promotionName = intent.getStringExtra(DataItems.PROMOTION_NAME_KEY);
             if (promotionName != null) {
@@ -90,8 +95,28 @@ public class UsePromotionActivity extends AppCompatActivity {
             setContentView(R.layout.activity_use_promotion);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             init();
-            new DeletePromotion(UsePromotionActivity.this, true, "").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if(codeType==2)//chi co QR
+                new DeletePromotion(UsePromotionActivity.this, true, "",false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            deletePromotion();
         }
+
+    }
+
+    private void deletePromotion() {
+        PromtionObject promtionObject = mSqliteHelper.getPromotionWithID(promotionId);
+        if (promtionObject.getTotal() > 1) {
+            mSqliteHelper.updatePromotion(promotionId, promtionObject.getTotal() - 1);
+        } else {
+            File file = new File(promtionObject.getImageURL());
+            file.delete();
+            mSqliteHelper.deletePromotion(promotionId);
+        }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        sendBroadCastSuccess();
 
     }
 
@@ -104,6 +129,8 @@ public class UsePromotionActivity extends AppCompatActivity {
         ivPromotion = (ImageView) findViewById(R.id.ivPromotion);
         pbImageProgress = (ProgressBar) findViewById(R.id.pbImageProgress);
         btManualRedemption = (Button) findViewById(R.id.btManualRedemption);
+        mPromtionObject = mSqliteHelper.getPromotionWithID(promotionId);
+
         if (codeType == 2) {
             btManualRedemption.setVisibility(View.GONE);
         } else if (codeType == 3) {
@@ -225,7 +252,7 @@ public class UsePromotionActivity extends AppCompatActivity {
 
                     String code = etCode.getText().toString();
                     if (code.length() > 0) {
-                        new DeletePromotion(UsePromotionActivity.this, true, code).execute();
+                        new DeletePromotion(UsePromotionActivity.this, true, code,true).execute();
                         dialog.dismiss();
                     } else {
                         Toast.makeText(UsePromotionActivity.this, "Please! Enter code first", Toast.LENGTH_SHORT).show();
@@ -244,28 +271,32 @@ public class UsePromotionActivity extends AppCompatActivity {
 //        if(isLoaded) {
 //            showDialogCongratulations();
 //        }else {
-        final Dialog dialog = new Dialog(UsePromotionActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_confirm_exit);
+        if(codeType!=2&&!isUsePromotion)
+            new DeletePromotion(UsePromotionActivity.this, true, "",true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        else {
+            final Dialog dialog = new Dialog(UsePromotionActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_confirm_exit);
 
-        Button btOk = (Button) dialog.findViewById(R.id.btOk);
-        Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
-        // if button is clicked, close the custom dialog
-        btOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialogCongratulations();
-                dialog.dismiss();
-            }
-        });
+            Button btOk = (Button) dialog.findViewById(R.id.btOk);
+            Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
+            // if button is clicked, close the custom dialog
+            btOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialogCongratulations();
+                    dialog.dismiss();
+                }
+            });
 
-        btCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+            btCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
 //        }
     }
 
@@ -290,21 +321,22 @@ public class UsePromotionActivity extends AppCompatActivity {
     class DeletePromotion extends AsyncTask<Void, Void, JSONObject> {
         private Context mContext;
         private boolean mIsUse;
+        private boolean mIsShowLoading;
         private String mCode;
-        private PromtionObject mPromtionObject;
 
-        public DeletePromotion(Context context, boolean isUse, String code) {
+        public DeletePromotion(Context context, boolean isUse, String code, boolean isShowLoading) {
             mContext = context;
             mIsUse = isUse;
             mCode = code;
-            mPromtionObject = mSqliteHelper.getPromotionWithID(promotionId);
+            mIsShowLoading=isShowLoading;
 
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (!mCode.isEmpty())
+            bonusPromotions="";
+            if (mIsShowLoading)
                 mDialog = ProgressDialog.show(mContext, null,
                         "Loading..", true);
         }
@@ -315,29 +347,26 @@ public class UsePromotionActivity extends AppCompatActivity {
             if (mIsUse) {
                 return DataItems.UsePromotion(mContext, promotionId, mCode, beaconId, codeType);
             } else {
-                mSqliteHelper.deletePromotion(promotionId);
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(JSONObject result) {
+            if(mDialog.isShowing())
+                mDialog.dismiss();
             if (mIsUse) {
                 try {
-
                     if (result != null) {
+
+                        isUsePromotion=true;
+                        errDescription = result.getString("message");
                         if (result.getBoolean("state")) {
-                            PromtionObject promtionObject = mSqliteHelper.getPromotionWithID(promotionId);
-                            if (promtionObject.getTotal() > 1) {
-                                mSqliteHelper.updatePromotion(promotionId, promtionObject.getTotal() - 1);
-                            } else {
-                                File file = new File(promtionObject.getImageURL());
-                                file.delete();
-                                mSqliteHelper.deletePromotion(promotionId);
-                            }
+                            if(!mCode.isEmpty())
+                                btManualRedemption.setVisibility(View.GONE);
                             int point = mPromtionObject.getUseBonus().getPoint();
                             int xp = mPromtionObject.getUseBonus().getXp();
-
+                            bonusPromotions=result.getString("promotions");
                             List<ItemQTY> itemQTYList = new ArrayList<>();
                             JSONArray jsonArray = result.getJSONArray("item");
                             int length = 0;
@@ -354,23 +383,19 @@ public class UsePromotionActivity extends AppCompatActivity {
                                 try {
                                     new DownloadBonusItemActionUse(UsePromotionActivity.this, point, xp).execute(itemQTYList);
                                 } catch (Exception e) {
-                                    if (mDataItems != null) {
-                                        mDialog.dismiss();
-                                    }
+                                    if(!mCode.isEmpty())
+                                        finish();
                                 }
                             } else {
                                 mDataItems.addPoint(point, xp);
-                                if (mDataItems != null) {
-                                    mDialog.dismiss();
-                                }
-
+                                showDialogUseCode(errDescription, true);
                             }
 
                         } else {
-                            if (mDataItems != null) {
-                                mDialog.dismiss();
+
+                            if(!mCode.isEmpty()) {
+                                showDialogUseCode(errDescription, false);
                             }
-                            Toast.makeText(mContext, "Code incorrect!", Toast.LENGTH_LONG).show();
                         }
                     } else {
                         Toast.makeText(mContext, "Connect to server failed", Toast.LENGTH_SHORT).show();
@@ -379,14 +404,47 @@ public class UsePromotionActivity extends AppCompatActivity {
 //                    Toast.makeText(mContext, "Connect to server failed", Toast.LENGTH_SHORT).show();
                 }
 
-            } else {
-                if (mDataItems != null) {
-                    mDialog.dismiss();
-                }
             }
-
             super.onPostExecute(result);
         }
+    }
+    private void showDialogUseCode(String errDescription, final boolean state) {
+        if (!errDescription.isEmpty()) {
+            final Dialog dialog = new Dialog(UsePromotionActivity.this);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_use_promotion_success);
+
+            TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+            TextView tvContent = (TextView) dialog.findViewById(R.id.tvContent);
+            Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
+            tvContent.setText(Html.fromHtml(errDescription));
+//            tvContent.setText(errDescription);
+            if (!state) {
+                tvTitle.setText("Error!");
+                tvTitle.setTextColor(Color.parseColor("#cc0000"));
+            }
+
+
+            btCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+        }
+    }
+
+
+    private void sendBroadCastSuccess(){
+        Intent intent = new Intent(Global.BROADCAST_USE_CODE+promotionId);
+        intent.putExtra(Global.EXTRA_ID, promotionId);
+        intent.putExtra(Global.EXTRA_DATA, bonusPromotions);
+        intent.putExtra(Global.EXTRA_DESCRIPTION, errDescription);
+        sendBroadcast(intent);
+
     }
 
     public void showDialogCongratulations() {
@@ -459,10 +517,11 @@ public class UsePromotionActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mDataItems != null) {
+            if (mDialog.isShowing()) {
                 mDialog.dismiss();
             }
             mDataItems.addPoint(mPoint, mXP);
+            showDialogUseCode(errDescription, true);
             super.onPostExecute(aVoid);
         }
     }

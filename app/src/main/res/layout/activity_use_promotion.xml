@@ -112,7 +112,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/dialog_redeem_ok_button"
+        android:background="@drawable/dialog_green_button"
         android:text="Use Manual Redemption"
         android:textColor="@color/white" />
 

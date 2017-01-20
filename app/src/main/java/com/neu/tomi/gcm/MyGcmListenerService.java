@@ -77,8 +77,9 @@ public class MyGcmListenerService extends GcmListenerService {
                     String title = jsonObject.getString("title");
                     String content = jsonObject.getString("content");
                     String link = jsonObject.getString("link");
+                    String linkCaption = jsonObject.getString("link_caption");
                     int linkType = jsonObject.getInt("link_type");
-                    sqliteHelper.insertMessage(id, title, content, link,linkType);
+                    sqliteHelper.insertMessage(id, title, content, link,linkType,linkCaption);
                     Global.showNotification(getBaseContext(), title, content, id);
                 }
             } catch (JSONException e) {

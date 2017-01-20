@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -69,6 +70,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -132,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
 
         isAddWidget = new DataItems(MainActivity.this).isHelpFirst();
-        signOut();
 
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_main);
@@ -192,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         } else {
             checkAddWidget();
         }
+        signOut();
         rename();
-        startService();
     }
 
     private void rename() {
@@ -266,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void startActivityHome() {
+        startService();
         Intent currentIntent = getIntent();
         int EXTRA_APPWIDGET_ID = currentIntent.getIntExtra("EXTRA_APPWIDGET_ID", -1);
         String EXTRA_BEACON_INFO = currentIntent.getStringExtra("EXTRA_BEACON_INFO");
@@ -283,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     private void startActivityHome(boolean isLogin) {
+        startService();
         Intent currentIntent = getIntent();
         int EXTRA_APPWIDGET_ID = currentIntent.getIntExtra("EXTRA_APPWIDGET_ID", -1);
         String EXTRA_BEACON_INFO = currentIntent.getStringExtra("EXTRA_BEACON_INFO");
@@ -337,7 +341,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             });
 
             callbackManager = CallbackManager.Factory.create();
-            btSignInFacebook.setReadPermissions("public_profile", "user_birthday");
+//            btSignInFacebook.setReadPermissions(Arrays.asList("public_profile", "user_birthday","email"));
+            btSignInFacebook.setReadPermissions(Arrays.asList(
+                    "public_profile", "email"));
             btSignInFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
@@ -512,9 +518,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionRead = ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionCoarseLocation = ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionFineLocation = ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_FINE_LOCATION);
         int permissionReadPhoneState = ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_PHONE_STATE);
-        if ((permissionWrite + permissionRead + permissionReadPhoneState) != PackageManager.PERMISSION_GRANTED) {
+        if ((permissionCoarseLocation+permissionFineLocation+permissionWrite + permissionRead + permissionReadPhoneState) != PackageManager.PERMISSION_GRANTED) {
 
 //            // Should we show an explanation?
 //            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -525,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE},
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     100);
 
             // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
@@ -613,9 +623,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             case 100: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0) {
-                    int result = 0;
+                    int result = PackageManager.PERMISSION_GRANTED;
                     for (int grant : grantResults) {
-                        result += grant;
+                        if(grant!=PackageManager.PERMISSION_GRANTED) {
+                            result=PackageManager.PERMISSION_DENIED;
+                            break;
+                        }
                     }
                     if (result == PackageManager.PERMISSION_GRANTED) {
                         checkAddWidget();
@@ -660,6 +673,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     class CheckVersion extends AsyncTask<Void, Void, JSONObject> {
@@ -757,12 +775,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         String name = mDataItems.getNameOfUser();
                         String link = "";
                         String gender = "";
+                        String email = "";
                         try {
                             name = object.getString("name");
-                            link = "http://graph.facebook.com/" + socialId + "/picture?width=100&height=100";
+                            JSONObject picture =object.getJSONObject("picture");
+                            link = picture.getJSONObject("data").getString("url");// "http://graph.facebook.com/" + socialId + "/picture?width=100&height=100";
+                        } catch (JSONException e) {
+                        }
+                        try {
                             gender = object.getString("gender");
                         } catch (JSONException e) {
-                            e.printStackTrace();
+
                         }
                         String birthday = "";
 
@@ -771,19 +794,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        try {
+                            email = object.getString("email");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
 
                         int sex = 0;
                         if (gender.equals("female") || gender.equals("nữ")) {
                             sex = 1;
                         }
                         String socialIdNew = "facebook" + socialId;
-                        new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex).execute();
+                        new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex,email).execute();
                         dialog.dismiss();
                         mDataItems.setNameOfUser(name);
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,gender,birthday,age_range,picture.width(150).height(150)");
+        parameters.putString("fields", "id,name,link,email,gender,birthday,age_range,picture.width(150).height(150)");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -792,6 +821,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (result.isSuccess()) {
             Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
             // Signed in successfully, show authenticated UI.
+//            result.getSignInAccount().getIdToken();
             int sex = person.getGender();
             String birthday = "";
             if (person.getBirthday() != null)
@@ -811,7 +841,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
 //            String socialIdNew ="google"+acct.getId();
             String socialIdNew = "google" + email;
-            new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex).execute();
+            new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex,email).execute();
             dialog.dismiss();
         } else {
             // Signed out, show unauthenticated UI.
@@ -826,16 +856,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         private String mAvatar;
         private String mName;
         private String mBirthday;
+        private String mEmail;
         private int mSex;
         private ProgressDialog mDialog;
 
-        public GetPointFirstRun(Context context, String socialId, String avatar, String name, String birthday, int sex) {
+        public GetPointFirstRun(Context context, String socialId, String avatar, String name, String birthday, int sex,String email) {
             mContext = context;
             mSocialId = socialId;
             mAvatar = avatar;
             mName = name;
             mBirthday = birthday;
             mSex = sex;
+            mEmail=email;
         }
 
         @Override
@@ -847,7 +879,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return mDataItems.getFirstRunService(mSocialId, mAvatar, mName, mBirthday, mSex, MainActivity.this);
+            return mDataItems.getFirstRunService(mSocialId, mAvatar, mName, mBirthday, mSex, MainActivity.this,mEmail);
         }
 
         @Override
@@ -1040,34 +1072,46 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             File fileOrDirectory = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS) + "/tomi_image");
             if (fileOrDirectory.isDirectory()) {
-                for (File child : fileOrDirectory.listFiles())
-                    child.delete();
+                if(fileOrDirectory.listFiles()!=null&&fileOrDirectory.listFiles().length>0)
+                    for (File child : fileOrDirectory.listFiles())
+                        child.delete();
             }
 
             mDataItems.clearDataShareReferences();
             mDataItems.getSQLiteHelper().clearData();
+            signOutSocial();
+            mDataItems.setUpdateVersion41(true);
+        }
+        if(!mDataItems.isUpdateVersion48()){
+            mDataItems.setUserId("");
+            signOutSocial();
+            mDataItems.setUpdateVersion48(true);
+        }
+    }
+
+    private void signOutSocial() {
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (Exception ex) {
+
+        }
+        if (mGoogleApiClient.isConnected()) {
             try {
-                LoginManager.getInstance().logOut();
+
+
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient)
+                        .setResultCallback(
+                                new ResultCallback<Status>() {
+                                    @Override
+                                    public void onResult(Status status) {
+                                    }
+                                });
+
             } catch (Exception ex) {
 
             }
-            if (mGoogleApiClient.isConnected()) {
-                try {
-
-
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient)
-                            .setResultCallback(
-                                    new ResultCallback<Status>() {
-                                        @Override
-                                        public void onResult(Status status) {
-                                        }
-                                    });
-
-                } catch (Exception ex) {
-
-                }
-            }
-            mDataItems.setUpdateVersion41(true);
         }
     }
 }
+
+

@@ -36,7 +36,6 @@
             android:layout_marginTop="4dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="Tell us"
             android:background="@drawable/button_dialog_close"
             android:textColor="@android:color/white" />
 

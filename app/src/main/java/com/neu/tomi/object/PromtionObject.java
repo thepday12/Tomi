@@ -127,6 +127,22 @@ public class PromtionObject {
         this.note = note;
     }
 
+    public int getPriorityLevel() {
+        return priorityLevel;
+    }
+
+    public void setPriorityLevel(int priorityLevel) {
+        this.priorityLevel = priorityLevel;
+    }
+
+    public int getExpiredStatus() {
+        return expiredStatus;
+    }
+
+    public void setExpiredStatus(int expiredStatus) {
+        this.expiredStatus = expiredStatus;
+    }
+
     private String promotionId;
     private String promotionLink;
     private String imageURL;
@@ -141,6 +157,8 @@ public class PromtionObject {
     private String note;
     private int total;
     private int showUrl;
+    private int priorityLevel;
+    private int expiredStatus;
 
     public PromtionObject(JSONObject jsonObject) {
         try {
@@ -157,6 +175,7 @@ public class PromtionObject {
 
 
             setName(jsonObject.getString("promo_name"));
+            setPriorityLevel(jsonObject.getInt("priority_level"));
             try {
                 setShowUrl(jsonObject.getInt("showURL"));
             } catch (Exception e) {
@@ -172,12 +191,16 @@ public class PromtionObject {
                 setCodeType(jsonObject.getInt("code_type"));
             } catch (Exception e) {
                 setCodeType(1);
+            }try {
+                setExpiredStatus(jsonObject.getInt("hide_day_left"));
+            } catch (Exception e) {
+                setExpiredStatus(1);
             }
         } catch (JSONException e) {
         }
     }
 
-    public PromtionObject(String adsId, String imageURL, String description,String note, ActionObject useBonus, ActionObject shareBonus, String endTime, String beaconID, String promoLink, int total, int showUrl, int codeType, String name) {
+    public PromtionObject(String adsId, String imageURL, String description,String note, ActionObject useBonus, ActionObject shareBonus, String endTime, String beaconID, String promoLink, int total, int showUrl, int codeType, String name,int priorityLevel,int expiredStatus) {
         setPromotionId(adsId);
         setImageURL(imageURL);
         setDescription(description);
@@ -191,6 +214,8 @@ public class PromtionObject {
         setCodeType(codeType);
         setShowUrl(showUrl);
         setName(name);
+        setPriorityLevel(priorityLevel);
+        setExpiredStatus(expiredStatus);
 
     }
 

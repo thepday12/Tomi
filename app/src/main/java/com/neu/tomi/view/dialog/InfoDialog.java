@@ -1,16 +1,22 @@
 package com.neu.tomi.view.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neu.tomi.R;
@@ -37,6 +43,7 @@ public class InfoDialog extends AppCompatActivity {
         Button btOk = (Button) findViewById(R.id.btOk);
         if(bonusType<0){
             llContent.setVisibility(View.GONE);
+            btOk.setText("OK");
         }
         mDataItems = new DataItems(InfoDialog.this);
 
@@ -51,6 +58,11 @@ public class InfoDialog extends AppCompatActivity {
                     if (!name.isEmpty()) {
                         if (Global.isValidEmail(email)) {
                             if (!phone.isEmpty()) {
+                                View view = getCurrentFocus();
+                                if (view != null) {
+                                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                }
                                 new UpdateInfo(name,email,phone).execute();
                             } else {
                                 etPhone.requestFocus();
@@ -104,13 +116,13 @@ public class InfoDialog extends AppCompatActivity {
             mDialog.dismiss();
             if (jsonObject != null) {
                 try {
-                    Toast.makeText(InfoDialog.this, jsonObject.getString("error_description"), Toast.LENGTH_SHORT).show();
-                    if (jsonObject.getBoolean("state")) {
+                    boolean state=jsonObject.getBoolean("state");
+                    if (state) {
                         mDataItems.setUpdateInfo(true);
-                        finish();
                     }else{
                         mDataItems.setUpdateInfo(false);
                     }
+                    showDialogState(jsonObject.getString("error_description"),state);
                 } catch (JSONException e) {
                     Toast.makeText(InfoDialog.this, R.string.error_null_value, Toast.LENGTH_SHORT).show();
                 }
@@ -119,5 +131,35 @@ public class InfoDialog extends AppCompatActivity {
             }
             super.onPostExecute(jsonObject);
         }
+
+        private void showDialogState(String errDescription, final boolean state) {
+            if (!errDescription.isEmpty()) {
+                final Dialog dialog = new Dialog(InfoDialog.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_use_promotion_success);
+
+                TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+                TextView tvContent = (TextView) dialog.findViewById(R.id.tvContent);
+                Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
+                tvContent.setText(errDescription);
+                if(!state){
+                    tvTitle.setText("Error!");
+                    tvTitle.setTextColor(Color.parseColor("#cc0000"));
+                }
+
+
+                btCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        if(state){
+                            finish();
+                        }
+                    }
+                });
+                dialog.show();
+            }
+        }
+
     }
 }

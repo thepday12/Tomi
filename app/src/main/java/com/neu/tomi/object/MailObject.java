@@ -51,11 +51,20 @@ public class MailObject {
         this.id = id;
     }
 
+    public String getLinkCaption() {
+        return linkCaption;
+    }
+
+    public void setLinkCaption(String linkCaption) {
+        this.linkCaption = linkCaption;
+    }
+
     private String id;
     private String title;
     private String content;
     private String link;
     private String date;
+    private String linkCaption;
 
     public int getLinkType() {
         return linkType;
@@ -68,7 +77,7 @@ public class MailObject {
     private int linkType;
     private boolean state;
 
-    public MailObject(String id, String title, String content, String link, boolean state,int linkType) {
+    public MailObject(String id, String title, String content, String link, boolean state,int linkType,String linkCaption) {
         setTitle(title);
         setContent(content);
         setLink(link);
@@ -76,16 +85,9 @@ public class MailObject {
         setId(id);
         setDate(Global.getDate());
         setLinkType(linkType);
+        setLinkCaption(linkCaption);
     }
-    public MailObject(String id, String title, String content, String link, boolean state, String date, int linkType) {
-        setTitle(title);
-        setContent(content);
-        setLink(link);
-        setState(state);
-        setId(id);
-        setDate(date);
-        setLinkType(linkType);
-    }
+
 
     public String getDate() {
         String []items =date.split(" ");

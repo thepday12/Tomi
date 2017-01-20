@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -48,6 +50,7 @@ public class PromotionDialog extends AppTourDialog {
         getWindow().setLayout(screenWidth, screenheight);
         Intent intent = getIntent();
         boolean isTreat = intent.getBooleanExtra("TREAT", false);
+        String promotionId = intent.getStringExtra("PROMOTION_ID");
         boolean isMiss = intent.getBooleanExtra("MISS", false);
         isRestart = intent.getBooleanExtra("RESTART", false);
         String beaconInfo = intent.getStringExtra("INFO");
@@ -55,7 +58,7 @@ public class PromotionDialog extends AppTourDialog {
         setTreat(isTreat);
          dataItems = new DataItems(PromotionDialog.this);
         if (isTreat) {
-            new LoadPromotionsGrab(PromotionDialog.this).execute();
+            new LoadPromotionsGrab(PromotionDialog.this,promotionId).execute();
         } else {
 //            dataItems.addBeaconActive(beaconInfo);
 //            setDefautDetectBeacon();
@@ -97,11 +100,13 @@ public class PromotionDialog extends AppTourDialog {
         private Context mContext;
         private ProgressDialog mDialog;
         private SqliteHelper mSqliteHelper;
+        private String promotionId;
 
-        public LoadPromotionsGrab(Context context) {
+        public LoadPromotionsGrab(Context context,String promotionId) {
             mContext = context;
             promtionObjects = new ArrayList<>();
             mSqliteHelper = SqliteHelper.getInstanceSQLiteHelper(context);
+            this.promotionId=promotionId;
 
         }
 
@@ -121,12 +126,22 @@ public class PromotionDialog extends AppTourDialog {
         @Override
         protected void onPostExecute(List<PromtionObject> promtionObjects) {
 
-
             if (promtionObjects.size() > 0) {
-                for (PromtionObject item : promtionObjects) {
-                    addSlide(item, Global.getColor());
-                }
                 setDot(promtionObjects.size());
+                if(promotionId!=null&&!promotionId.isEmpty()) {
+                    int position =0;
+                    for (int i=0;i<promtionObjects.size();i++) {
+                        PromtionObject item = promtionObjects.get(i);
+                        addSlide(item, Global.getColor());
+                        if(item.getPromotionId().equals(promotionId))
+                            position=i;
+                    }
+                    setCurrentSlide(position);
+                }else {
+                    for (PromtionObject item : promtionObjects) {
+                        addSlide(item, Global.getColor());
+                    }
+                }
             } else {
                 finish();
                 if (!isRestart)

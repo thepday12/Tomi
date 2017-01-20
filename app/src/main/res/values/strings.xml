@@ -26,6 +26,8 @@
     <string name="next_level_19">You get 100PTs</string>
     <string name="title_activity_shop_dialog">ShopDialog</string>
     <string name="title_activity_daily_dialog"></string>
+    <string name="button_open_treasure">Open treasure box</string>
+    <string name="title_grab_success">The card has been grabbed and stored into the treasure box. Go to your treasure box to redeem the voucher!</string>
     <string name="warning_use">This single-use gift certificate can only be redeemed at the cashier upon payment. Once redeemed, the gift certificate will no longer be available. Would you like to redeem now? Otherwise, please select “Cancel”.</string>
     <string name="warning_delete"></string>
     <string name="warning_exit">Have you completed your redemption?Otherwise, please select “Cancel”.</string>
@@ -50,6 +52,9 @@
     <string name="target_treasure_title">Promotions</string>
     <string name="target_treasure_content">This Treasure Box safeguards your loot! There’s plenty of room so keep grabbing more promotions!</string>
     <string name="error_null_value">Can\'t connect to server</string>
+    <string name="error_share">Can\'t share with app</string>
+    <string name="title_success">Successful!</string>
+
 
     <!--Error signIn-->
     <string name="edit_text_null_value">This field is required</string>

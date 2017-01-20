@@ -172,6 +172,15 @@ public abstract class AppTourDialog extends FragmentActivity {
      */
     public void setCurrentSlide(int position) {
         introViewPager.setCurrentItem(position, true);
+        if (numberOfSlides > 1) {
+            //Set current inactive dots color
+            for (int i = 0; i < numberOfSlides; i++) {
+                dots[i].setTextColor(inactiveDocsColor);
+            }
+
+            //Set current active dot color
+            dots[position].setTextColor(activeDotColor);
+        }
     }
 
     /**
@@ -275,6 +284,7 @@ public abstract class AppTourDialog extends FragmentActivity {
         });
 
     }
+
 
     private void setViewPagerDots() {
         dots = new TextView[numberOfSlides];

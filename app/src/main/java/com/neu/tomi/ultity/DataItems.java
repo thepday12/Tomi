@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.neu.tomi.BuildConfig;
@@ -110,6 +111,7 @@ public class DataItems {
     private final String HELP_FIRST_KEY = "HELP_FIRST";
     private final String PHONE_ID_KEY = "PHONE_ID";
     private final String UPDATE_VERSION_41_KEY = "UPDATE_VERSION_41";
+    private final String UPDATE_VERSION_48_KEY = "UPDATE_VERSION_48";
     private final String UPDATE_INFO_KEY = "UPDATE_INFO_";
     private final String LOCATION_A_KEY = "LOCATION_A";
     private final String LOCATION_B_KEY = "LOCATION_B";
@@ -178,9 +180,14 @@ public class DataItems {
     }
 
     public void clearDataShareReferences() {
+        boolean isAddWidget = isHelpFirst();
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.clear();
         editor.apply();
+        if(isAddWidget){
+            setStateHelp(true);
+        }
+
     }
 
     public boolean isLoadFirstRun() {
@@ -771,6 +778,7 @@ public class DataItems {
             name = imageURL.substring(0, lastIndexDot);
         name = name.substring(name.lastIndexOf('/') + 1);
         name = name.replace(";", "");
+//        String name= URLUtil.guessFileName(imageURL, null, null);
         return name;
     }
 
@@ -874,10 +882,10 @@ public class DataItems {
         try {
 
             File file = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS) + "/tomi_image", nameImage + ".png");
+                    Environment.DIRECTORY_DOWNLOADS) + "/tomi_image", nameImage);
             file.getParentFile().mkdirs();
             FileOutputStream out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
             bmpUri = Uri.fromFile(file);
         } catch (IOException e) {
@@ -1138,7 +1146,7 @@ public class DataItems {
         return jsonObject;
     }
 
-    public static JSONObject getFirstRunService(String socialId, String avatar, String name, String birthday, int sex, Context context) {
+    public static JSONObject getFirstRunService(String socialId, String avatar, String name, String birthday, int sex, Context context,String email) {
         String brand = Build.MANUFACTURER.toUpperCase();
         String model = Build.MODEL.toUpperCase();
         if (model.startsWith(brand)) {
@@ -1156,7 +1164,7 @@ public class DataItems {
             e.printStackTrace();
         }
         String os = "&os=Android&version=" + Build.VERSION.SDK_INT + "&brand=" + brand + "&model=" + model;
-        String acc = "&avatar=" + avatar + "&display_name=" + name + "&birthday=" + birthday + "&sex=" + sex;
+        String acc = "&avatar=" + avatar + "&display_name=" + name + "&birthday=" + birthday + "&sex=" + sex+"&email="+email;
         JSONObject jsonObject = null;
         String url = LINK_API + "/cms/pages/Tommi_API.php?Object=Users&act=Sign_up&phone_id=" + socialId + os + acc + "&old_id=" + getIMEIId(context);
         String json = HttpRequest.get(url).connectTimeout(30000).body();
@@ -2513,7 +2521,6 @@ public class DataItems {
         HttpURLConnection conn = null;
         try {
             url = new URL(requestURL);
-
             conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(30000);
             conn.setConnectTimeout(30000);
@@ -2602,6 +2609,16 @@ public class DataItems {
 
     public boolean isUpdateVersion41() {
         return mSharedPreferences.getBoolean(UPDATE_VERSION_41_KEY, false);
+    }
+    //update 2016-change name promotion
+    public void setUpdateVersion48(boolean state) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(UPDATE_VERSION_48_KEY, state);
+        editor.apply();
+    }
+
+    public boolean isUpdateVersion48() {
+        return mSharedPreferences.getBoolean(UPDATE_VERSION_48_KEY, false);
     }
 
     public void setUpdateInfo(boolean state) {

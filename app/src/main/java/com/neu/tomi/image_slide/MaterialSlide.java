@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -58,7 +59,6 @@ import com.neu.tomi.ultity.DataItems;
 import com.neu.tomi.ultity.Global;
 import com.neu.tomi.ultity.HttpRequest;
 import com.neu.tomi.ultity.SqliteHelper;
-import com.neu.tomi.view.HomeActivity;
 import com.neu.tomi.view.ShowDetailImageActivity;
 import com.neu.tomi.view.UsePromotionActivity;
 import com.neu.tomi.view.VisitWebsiteActivity;
@@ -107,6 +107,35 @@ public class MaterialSlide extends Fragment {
     private AlertDialog alertDialog = null;
     private Dialog dialog;
     private Context mContext;
+    private JSONArray bonusPromotions;
+    private String bonusImage;
+    private String currentIdUse = "";
+    private int reqWidth=0;
+    private int reqHeight=0;
+    private BroadcastReceiver broadCastUseCode = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String id = intent.getStringExtra(Global.EXTRA_ID);
+            if (!id.isEmpty() && currentIdUse != id) {
+                currentIdUse = id;
+                String data = intent.getStringExtra(Global.EXTRA_DATA);
+                if (data != null && !data.isEmpty()) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(data);
+                        if (jsonArray.length() > 0) {
+                            String errDescription = intent.getStringExtra(Global.EXTRA_DESCRIPTION);
+                            new DownloadPromotion(mContext, new PromtionObject(jsonArray.getJSONObject(0)), true, errDescription).execute();
+                        }
+                    } catch (JSONException e) {
+
+                    }
+                } else {
+                    getActivity().finish();
+                }
+            }
+
+        }
+    };
 
     public static MaterialSlide newInstance(PromtionObject promtionObject, boolean isTreat) {
         MaterialSlide materialSlide = new MaterialSlide();
@@ -121,6 +150,13 @@ public class MaterialSlide extends Fragment {
 
     public String getPromotionId() {
         return mPromtionObject.getPromotionId();
+    }
+
+    @Override
+    public void onDestroy() {
+        mContext.unregisterReceiver(mBatInfoReceiver);
+        mContext.unregisterReceiver(broadCastUseCode);
+        super.onDestroy();
     }
 
     @Override
@@ -143,10 +179,12 @@ public class MaterialSlide extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_material_slide, container, false);
-        mContext=rootView.getContext();
+        mContext = rootView.getContext();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        mContext.registerReceiver(broadCastUseCode, new IntentFilter(Global.BROADCAST_USE_CODE+mPromtionObject.getPromotionId()));
+
         mContext.registerReceiver(this.mBatInfoReceiver,
                 filter);
         dialog = new Dialog(mContext);
@@ -244,6 +282,8 @@ public class MaterialSlide extends Fragment {
             ivTotalPromotion.setVisibility(View.GONE);
         }
 
+        reqWidth = slideImageView.getWidth();
+        reqHeight = slideImageView.getHeight();
         slideImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,6 +305,7 @@ public class MaterialSlide extends Fragment {
                 pbImageProgress.setVisibility(View.GONE);
                 super.onSuccess();
             }
+
 
             @Override
             public void onError() {
@@ -309,26 +350,31 @@ public class MaterialSlide extends Fragment {
         } catch (ParseException e) {
 
         }
+        int expiredStatus = mPromtionObject.getExpiredStatus();
         int dayLeft = Global.getIntSubDate(endDay);
         if (dayLeft < 0) {
-            tvExpired.setVisibility(View.VISIBLE);
+            if (validShowExpired(expiredStatus)) {
+                tvExpired.setVisibility(View.VISIBLE);
+            }
         } else {
-            if (dayLeft < 4) {
-                String currentDate = Global.convertDateTimeToString(new Date());
-                if (Global.dateAndDate(currentDate, dateExpire)) {
-                    tvDayleft.setText("Only Valid Today!");
-                } else {
-                    if (dateExpire.split(" ")[1].equals("00:00:00") && Global.dateAndDate(Global.convertDateTimeToString(Global.add1Day()), dateExpire)) {
+            if (validShowDayLeft(expiredStatus)) {
+                if (dayLeft < 4) {
+                    String currentDate = Global.convertDateTimeToString(new Date());
+                    if (Global.dateAndDate(currentDate, dateExpire)) {
                         tvDayleft.setText("Only Valid Today!");
                     } else {
-                        tvDayleft.setText(Global.getTextSubDate(endDay) + " left");
+                        if (dateExpire.split(" ")[1].equals("00:00:00") && Global.dateAndDate(Global.convertDateTimeToString(Global.add1Day()), dateExpire)) {
+                            tvDayleft.setText("Only Valid Today!");
+                        } else {
+                            tvDayleft.setText(Global.getTextSubDate(endDay) + " left");
+                        }
                     }
+                    tvDayleft.setVisibility(View.VISIBLE);
+                    ObjectAnimator objAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(getActivity(), R.animator.waring);
+                    objAnim.setTarget(tvDayleft);
+                    objAnim.setEvaluator(new ArgbEvaluator());
+                    objAnim.start();
                 }
-                tvDayleft.setVisibility(View.VISIBLE);
-                ObjectAnimator objAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(getActivity(), R.animator.waring);
-                objAnim.setTarget(tvDayleft);
-                objAnim.setEvaluator(new ArgbEvaluator());
-                objAnim.start();
             }
             tvExpired.setVisibility(View.GONE);
         }
@@ -337,6 +383,7 @@ public class MaterialSlide extends Fragment {
         promotionExits();
         return rootView;
     }
+
 
     private void visibleLayoutDetail(Context context, boolean isDetail) {
         loadItemBonus(context, isDetail);
@@ -364,12 +411,29 @@ public class MaterialSlide extends Fragment {
             wvDescriptionDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
             setDateExpire();
         } else {
+            int expiredStatus = mPromtionObject.getExpiredStatus();
             if (Global.getIntSubDate(endDay) < 0) {
-                tvExpired.setVisibility(View.VISIBLE);
+                if (validShowExpired(expiredStatus)) {
+                    tvExpired.setVisibility(View.VISIBLE);
+                }
             }
             rlLayoutPromotion.setVisibility(View.VISIBLE);
             fadeViewOut(rlLayoutDetail);
         }
+    }
+
+    private boolean validShowExpired(int expiredStatus) {
+        if (expiredStatus == 2 || expiredStatus == 4 || expiredStatus == 6 || expiredStatus == 7)
+            return false;
+        else
+            return true;
+    }
+
+    private boolean validShowDayLeft(int expiredStatus) {
+        if (expiredStatus == 1 || expiredStatus == 4 || expiredStatus == 5 || expiredStatus == 7)
+            return false;
+        else
+            return true;
     }
 
     private void setDateExpire() {
@@ -446,7 +510,6 @@ public class MaterialSlide extends Fragment {
                         showDialogCode();
                     } else {
                         showDialogRedeem();
-
                     }
                 } else {
                     Toast.makeText(mContext, "Please turn on internet first", Toast.LENGTH_SHORT).show();
@@ -513,13 +576,13 @@ public class MaterialSlide extends Fragment {
 
     private void promotionExits() {
         if (mSqliteHelper.promotionExist(mPromtionObject.getPromotionId()) && isTreat == false) {
-            llBonusShow.setVisibility(View.GONE);
+//            llBonusShow.setVisibility(View.GONE);
         }
     }
 
     private void showDialogCode() {
         if (dialog != null && dialog.isShowing()) return;
-        
+
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.setContentView(R.layout.dialog_code);
@@ -532,6 +595,7 @@ public class MaterialSlide extends Fragment {
 
                     String code = etCode.getText().toString();
                     if (code.length() > 0) {
+                        hiddenKeyboard();
                         new DeletePromotion(mContext, true, code).execute();
                     }
                     dialog.dismiss();
@@ -632,11 +696,12 @@ public class MaterialSlide extends Fragment {
         private int mPoint;
         private int mXp;
         private String nameSave;
-        private boolean mIsBonus;
+        private boolean mIsBonus, mOpenBox;
         private int mType;
         private PromtionObject promtionObject;
+        private String mErrDescription;
 
-        public SaveImageToDisk(Context context, DataItems dataItems, int point, int xp, boolean isBonus, PromtionObject promtionObject, int type) {
+        public SaveImageToDisk(Context context, DataItems dataItems, int point, int xp, boolean isBonus, PromtionObject promtionObject, int type, String errDescription, boolean openBox) {
             mContext = context;
             mDataItems = dataItems;
             mPoint = point;
@@ -645,6 +710,8 @@ public class MaterialSlide extends Fragment {
             mIsBonus = isBonus;
             this.promtionObject = promtionObject;
             mType = type;
+            mErrDescription = errDescription;
+            mOpenBox = openBox;
         }
 
 
@@ -687,11 +754,12 @@ public class MaterialSlide extends Fragment {
                 }
                 if (mIsBonus) {
                     if (mType == 0) {
-                        new DownloadPromotion(mContext, promtionObject).execute();
-                    } else if (mType == 1||mType == -1) {
+                        new DownloadPromotion(mContext, promtionObject, false, "").execute();
+                    } else if (mType == 1 || mType == -1) {
                         showDialogUpdateInfo(mType);
                     }
                 }
+                showDialogSuccess(mErrDescription, mOpenBox);
             } else
                 Toast.makeText(mContext, "Image saving failed", Toast.LENGTH_SHORT).show();
             super.onPostExecute(uri);
@@ -699,10 +767,88 @@ public class MaterialSlide extends Fragment {
 
     }
 
+    private void showDialogSuccess(String errDescription, boolean openBox) {
+        if (!errDescription.isEmpty()) {
+            final Dialog dialog = new Dialog(mContext);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_grab_success);
+
+
+            TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+            Button btOk = (Button) dialog.findViewById(R.id.btOk);
+            Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
+            tvTitle.setText(errDescription);
+            if (openBox) {
+                btOk.setVisibility(View.VISIBLE);
+                btOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                        Intent intent = new Intent(mContext, PromotionDialog.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("TREAT", true);
+                        intent.putExtra("PROMOTION_ID", mPromtionObject.getPromotionId());
+                        startActivity(intent);
+
+                    }
+                });
+            } else {
+                btOk.setVisibility(View.GONE);
+            }
+
+            btCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+
+    }
+
+    private void showDialogUseCodeStatus(String errDescription, final boolean state) {
+        if (!errDescription.isEmpty()) {
+            final Dialog dialog = new Dialog(mContext);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_use_promotion_success);
+
+            TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+            TextView tvContent = (TextView) dialog.findViewById(R.id.tvContent);
+            Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
+            tvContent.setText(Html.fromHtml(errDescription));
+//            tvContent.setText(errDescription);
+            if (!state) {
+                tvTitle.setText("Error!");
+                tvTitle.setTextColor(Color.parseColor("#cc0000"));
+            }
+
+
+            btCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (state) {
+                        getActivity().finish();
+                    }
+                }
+            });
+            dialog.show();
+        }
+    }
+
+
     private void showDialogUpdateInfo(int type) {
         mDataItems.setUpdateInfo(false);
         Intent intent = new Intent(mContext, InfoDialog.class);
-        intent.putExtra(DataItems.EXTRA_BONUS_TYPE_KEY,type);
+        intent.putExtra(DataItems.EXTRA_BONUS_TYPE_KEY, type);
         startActivity(intent);
     }
 
@@ -716,6 +862,7 @@ public class MaterialSlide extends Fragment {
             mContext = context;
             mIsUse = isUse;
             mCode = code;
+            bonusPromotions = null;
 
         }
 
@@ -733,15 +880,22 @@ public class MaterialSlide extends Fragment {
                 return DataItems.UsePromotion(mContext, mPromtionObject.getPromotionId(), mCode, mPromtionObject.getBeaconID(), mPromtionObject.getCodeType());
             } else {
                 mSqliteHelper.deletePromotion(mPromtionObject.getPromotionId());
-                return null;
+                if (HttpRequest.isOnline(mContext))
+                    return mDataItems.sendActionPost();
+                else
+                    return null;
+
             }
         }
+
 
         @Override
         protected void onPostExecute(JSONObject result) {
             if (mIsUse) {
                 try {
                     if (result != null) {
+                        String errDescription = result.getString("message");
+
                         if (result.getBoolean("state")) {
                             File file = new File(mPromtionObject.getImageURL());
                             file.delete();
@@ -750,6 +904,7 @@ public class MaterialSlide extends Fragment {
                             int xp = mPromtionObject.getUseBonus().getXp();
 
                             List<ItemQTY> itemQTYList = new ArrayList<>();
+                            bonusPromotions = result.getJSONArray("promotions");
                             JSONArray jsonArray = result.getJSONArray("item");
                             int length = jsonArray.length();
                             if (length > 0) {
@@ -760,20 +915,24 @@ public class MaterialSlide extends Fragment {
                                     itemQTYList.add(new ItemQTY(itemObject, qty));
                                 }
                                 try {
-                                    new DownloadBonusItemActionUse(mContext, point, xp).execute(itemQTYList);
+                                    new DownloadBonusItemActionUse(mContext, point, xp, errDescription).execute(itemQTYList);
                                 } catch (Exception e) {
                                     mDialog.dismiss();
                                 }
                             } else {
-                                mDataItems.addPoint(point, xp);
                                 mDialog.dismiss();
-                                Toast.makeText(mContext, "Promotion used!!!", Toast.LENGTH_LONG).show();
-                                getActivity().finish();
+                                mDataItems.addPoint(point, xp);
+                                if (bonusPromotions != null && bonusPromotions.length() > 0) {
+                                    bonusImage = result.getString("image");
+                                    new DownloadListPromotion(mContext, bonusPromotions,bonusImage, true, errDescription).execute();
+                                } else {
+                                    showDialogUseCodeStatus(errDescription, true);
+                                }
                             }
 
                         } else {
                             mDialog.dismiss();
-                            Toast.makeText(mContext, "Code incorrect!", Toast.LENGTH_LONG).show();
+                            showDialogUseCodeStatus(errDescription, false);
                         }
                     } else {
                         mDialog.dismiss();
@@ -788,6 +947,7 @@ public class MaterialSlide extends Fragment {
                 mDialog.dismiss();
                 getActivity().finish();
             }
+
 
             Intent intent = new Intent(mContext, PromotionDialog.class);
             intent.putExtra("TREAT", true);
@@ -831,6 +991,7 @@ public class MaterialSlide extends Fragment {
 
                     PackageManager pm = context.getPackageManager();
                     List<ResolveInfo> activityList = pm.queryIntentActivities(shareIntent, 0);
+                    boolean shareStatus = false;
                     for (final ResolveInfo app : activityList) {
                         if ((app.activityInfo.packageName).equals(applicationObject.getPacketName())) {
                             final ActivityInfo activity = app.activityInfo;
@@ -840,17 +1001,22 @@ public class MaterialSlide extends Fragment {
 //                            ComponentName name = new ComponentName(applicationObject.getPacketName(), applicationObject.getPacketName());
 //                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //                            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
 //                            shareIntent.setType("image/png");
                             shareIntent.setComponent(name);
-                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             startActivityForResult(shareIntent, Global.SHARE_REQUEST_CODE);
+                            shareStatus = true;
                             dialog.dismiss();
                             break;
 
                         }
                     }
+                    if (!shareStatus) {
+                        Toast.makeText(mContext, R.string.error_share, Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             });
             dialog.show();
@@ -864,7 +1030,7 @@ public class MaterialSlide extends Fragment {
     public void showDialogRedeem() {
         if (dialog != null && dialog.isShowing())
             return;
-        
+
         dialog.setContentView(R.layout.dialog_confirm_use_promotion);
 //        dialog.setTitle("Title...");
 
@@ -889,7 +1055,7 @@ public class MaterialSlide extends Fragment {
                 intent.putExtra(DataItems.BEACON_ID_KEY, mPromtionObject.getBeaconID());
                 startActivity(intent);
                 dialog.dismiss();
-                getActivity().finish();
+//                getActivity().finish();
             }
         });
 
@@ -904,8 +1070,8 @@ public class MaterialSlide extends Fragment {
 
     public void showDialogDelete() {
         if (dialog != null && dialog.isShowing()) return;
-        
-        dialog.setContentView(R.layout.dialog_congratulations_use_promotion);
+
+        dialog.setContentView(R.layout.dialog_delete_promotion);
 //        dialog.setTitle("Title...");
 
         // set the custom dialog components - text, image and button
@@ -933,21 +1099,30 @@ public class MaterialSlide extends Fragment {
         dialog.show();
     }
 
-
-    public void showDialogBonusPromotion(PromtionObject promtionObject) {
+    private void hiddenKeyboard(){
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+    public void showDialogBonusPromotion(PromtionObject promtionObject, String congratulationText) {
         if (dialog != null && dialog.isShowing()) return;
-        
+
         dialog.setContentView(R.layout.dialog_bonus_promotion);
 //        dialog.setTitle("Title...");
 
         // set the custom dialog components - text, image and button
 
         TextView tvId = (TextView) dialog.findViewById(R.id.tvId);
+        TextView tvCongratulation = (TextView) dialog.findViewById(R.id.tvCongratulation);
         WebView wvDescriptionDetail = (WebView) dialog.findViewById(R.id.wvDescriptionDetail);
         TextView tvExpire = (TextView) dialog.findViewById(R.id.tvExpire);
         ImageView ivPromotion = (ImageView) dialog.findViewById(R.id.ivPromotion);
         Button btOk = (Button) dialog.findViewById(R.id.btOk);
         final ProgressBar pbImageProgress = (ProgressBar) dialog.findViewById(R.id.pbImageProgress);
+        if (!congratulationText.isEmpty())
+            tvCongratulation.setText(Html.fromHtml(congratulationText));
 
         String id = "NO. ";
         try {
@@ -979,6 +1154,62 @@ public class MaterialSlide extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                if(isTreat&&!currentIdUse.isEmpty())
+                    getActivity().finish();
+            }
+        });
+
+        dialog.show();
+    }
+    public void showDialogBonusPromotion(PromtionObject promtionObject, String congratulationText,String imageLink) {
+        if (dialog != null && dialog.isShowing()) return;
+
+        dialog.setContentView(R.layout.dialog_bonus_promotion);
+//        dialog.setTitle("Title...");
+
+        // set the custom dialog components - text, image and button
+
+        TextView tvId = (TextView) dialog.findViewById(R.id.tvId);
+        TextView tvCongratulation = (TextView) dialog.findViewById(R.id.tvCongratulation);
+        WebView wvDescriptionDetail = (WebView) dialog.findViewById(R.id.wvDescriptionDetail);
+        TextView tvExpire = (TextView) dialog.findViewById(R.id.tvExpire);
+        ImageView ivPromotion = (ImageView) dialog.findViewById(R.id.ivPromotion);
+        Button btOk = (Button) dialog.findViewById(R.id.btOk);
+        final ProgressBar pbImageProgress = (ProgressBar) dialog.findViewById(R.id.pbImageProgress);
+        if (!congratulationText.isEmpty())
+            tvCongratulation.setText(Html.fromHtml(congratulationText));
+
+        String id = "NO. ";
+        try {
+            String s = promtionObject.getBeaconID().replace("28788_", "");
+            id += s + "-" + promtionObject.getPromotionId();
+        } catch (Exception e) {
+        }
+        tvId.setText(id);
+        String text = "<html><head>"
+                + "<style type=\"text/css\">body{color: #fff; background-color: #ffffffff;}"
+                + "</style></head>"
+                + "<body>"
+                + mPromtionObject.getDescription()
+                + "</body></html>";
+        wvDescriptionDetail.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
+        wvDescriptionDetail.setBackgroundColor(Color.TRANSPARENT);
+        wvDescriptionDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+
+        tvExpire.setText("Expiry: " + promtionObject.getEndTimeShow());
+        Picasso.with(mContext).load(imageLink).into(ivPromotion, new Callback.EmptyCallback() {
+            @Override
+            public void onSuccess() {
+                pbImageProgress.setVisibility(View.GONE);
+            }
+        });
+
+        // if button is clicked, close the custom dialog
+        btOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getActivity().finish();
             }
         });
 
@@ -1020,12 +1251,15 @@ public class MaterialSlide extends Fragment {
         protected void onPostExecute(JSONObject jsonObject) {
             if (jsonObject != null) {
                 try {
+                    String errDescription = jsonObject.getString("error_description");
+                    boolean openBox = jsonObject.getBoolean("openbox");
                     if (jsonObject.getBoolean("state")) {
-                        PromtionObject tmp=mSqliteHelper.getPromotionWithID(mPromotionID);
-                        if ( tmp!= null) {
+                        PromtionObject tmp = mSqliteHelper.getPromotionWithID(mPromotionID);
+                        if (tmp != null) {
                             mSqliteHelper.updatePromotion(mPromotionID, tmp.getTotal() + 1);
                             mDialog.dismiss();
-                        }else {
+                            showDialogSuccess(errDescription, openBox);
+                        } else {
                             List<ItemQTY> itemQTYList = new ArrayList<>();
                             JSONArray jsonArray = jsonObject.getJSONArray("item");
                             PromtionObject promtionObject = null;
@@ -1044,7 +1278,7 @@ public class MaterialSlide extends Fragment {
                                     itemQTYList.add(new ItemQTY(itemObject, qty));
                                 }
                                 try {
-                                    new DownloadBonusItem(mPoint, mXp, isBonus, promtionObject, bonusType).execute(itemQTYList).get(120000, TimeUnit.MILLISECONDS);
+                                    new DownloadBonusItem(mPoint, mXp, isBonus, promtionObject, bonusType, errDescription, openBox).execute(itemQTYList).get(120000, TimeUnit.MILLISECONDS);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 } catch (ExecutionException e) {
@@ -1055,13 +1289,13 @@ public class MaterialSlide extends Fragment {
 
 
                             } else {
-                                new SaveImageToDisk(mContext, mDataItems, mPoint, mXp, isBonus, promtionObject, bonusType).execute();
+                                new SaveImageToDisk(mContext, mDataItems, mPoint, mXp, isBonus, promtionObject, bonusType, errDescription, openBox).execute();
                             }
                         }
 
                     } else {
                         mDialog.dismiss();
-                        Toast.makeText(mContext, jsonObject.getString("error_description"), Toast.LENGTH_SHORT).show();
+                        showDialogSuccess(errDescription, openBox);
                     }
                 } catch (JSONException e) {
                     mDialog.dismiss();
@@ -1078,16 +1312,19 @@ public class MaterialSlide extends Fragment {
     class DownloadBonusItem extends AsyncTask<List<ItemQTY>, Void, Void> {
         private int mPoint;
         private int mXP;
-        private boolean mIsBonus;
+        private boolean mIsBonus, mOpenBox;
         private PromtionObject promtionObject;
         private int mType;
+        private String mErrorDescription;
 
-        public DownloadBonusItem(int point, int xp, boolean isBonus, PromtionObject promtionObject, int type) {
+        public DownloadBonusItem(int point, int xp, boolean isBonus, PromtionObject promtionObject, int type, String errorDescription, boolean openBox) {
             mPoint = point;
             mXP = xp;
             mIsBonus = isBonus;
             this.promtionObject = promtionObject;
             mType = type;
+            mErrorDescription = errorDescription;
+            mOpenBox = openBox;
         }
 
         @Override
@@ -1117,7 +1354,7 @@ public class MaterialSlide extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            new SaveImageToDisk(mContext, mDataItems, mPoint, mXP, mIsBonus, promtionObject, mType).execute();
+            new SaveImageToDisk(mContext, mDataItems, mPoint, mXP, mIsBonus, promtionObject, mType, mErrorDescription, mOpenBox).execute();
             super.onPostExecute(aVoid);
         }
     }
@@ -1126,11 +1363,13 @@ public class MaterialSlide extends Fragment {
         private Context mContext;
         private int mPoint;
         private int mXP;
+        private String errDescription;
 
-        public DownloadBonusItemActionUse(Context context, int point, int xp) {
+        public DownloadBonusItemActionUse(Context context, int point, int xp, String errDescription) {
             mPoint = point;
             mXP = xp;
             mContext = context;
+            this.errDescription = errDescription;
         }
 
         @Override
@@ -1167,21 +1406,35 @@ public class MaterialSlide extends Fragment {
         protected void onPostExecute(Void aVoid) {
             mDialog.dismiss();
             mDataItems.addPoint(mPoint, mXP);
-            Toast.makeText(mContext, "Promotion used!!!", Toast.LENGTH_LONG).show();
-            getActivity().finish();
+
+            if (bonusPromotions != null && bonusPromotions.length() > 0) {
+                try {
+                    new DownloadPromotion(mContext, new PromtionObject(bonusPromotions.getJSONObject(0)), true, errDescription).execute();
+                } catch (JSONException e) {
+
+                }
+            } else {
+                showDialogUseCodeStatus(errDescription, true);
+            }
             super.onPostExecute(aVoid);
         }
     }
 
 
-    class DownloadPromotion extends AsyncTask<Void, Void, Boolean> {
+    class DownloadListPromotion extends AsyncTask<Void, Void, Boolean> {
         private Context mContext;
-        private PromtionObject mPromtionObject;
+        private JSONArray mJsonArray;
         private ProgressDialog mDialog;
+        private String errDescription;
+        private String mBonusImage;
+        private boolean status;
 
-        public DownloadPromotion(Context context, PromtionObject promtionObject) {
+        public DownloadListPromotion(Context context, JSONArray jsonArray,String bonusImage, boolean status, String errDescription) {
             this.mContext = context;
-            this.mPromtionObject = promtionObject;
+            this.mJsonArray = jsonArray;
+            this.errDescription = errDescription;
+            this.status = status;
+            mBonusImage=bonusImage;
         }
 
         @Override
@@ -1193,21 +1446,84 @@ public class MaterialSlide extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return Global.savePromotion(mPromtionObject, mSqliteHelper);
+            for(int i=0;i<mJsonArray.length();i++) {
+                try {
+                    PromtionObject promtionObject = new PromtionObject(bonusPromotions.getJSONObject(i));
+                    Global.savePromotion(promtionObject, mSqliteHelper,reqWidth,reqHeight);
+                } catch (JSONException e) {
+
+                }
+            }
+            return true;
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             mDialog.dismiss();
-            if (aBoolean) {
-                showDialogBonusPromotion(mPromtionObject);
+
+            if (errDescription != null && !errDescription.isEmpty()) {
+                if (aBoolean) {
+                    showDialogBonusPromotion(mPromtionObject, errDescription,mBonusImage);
+                } else {
+                    showDialogUseCodeStatus(errDescription, status);
+                }
+            } else {
+                if (aBoolean) {
+                    showDialogBonusPromotion(mPromtionObject, "",mBonusImage);
+                }
+            }
+            super.onPostExecute(aBoolean);
+        }
+    }
+
+
+    class DownloadPromotion extends AsyncTask<Void, Void, Boolean> {
+        private Context mContext;
+        private PromtionObject mPromtionObject;
+        private ProgressDialog mDialog;
+        private String errDescription;
+        private boolean status;
+
+        public DownloadPromotion(Context context, PromtionObject promtionObject, boolean status, String errDescription) {
+            this.mContext = context;
+            this.mPromtionObject = promtionObject;
+            this.errDescription = errDescription;
+            this.status = status;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDialog = ProgressDialog.show(mContext, null,
+                    "Loading..", true);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return Global.savePromotion(mPromtionObject, mSqliteHelper,reqWidth,reqHeight);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            mDialog.dismiss();
+
+            if (errDescription != null && !errDescription.isEmpty()) {
+                if (aBoolean) {
+                    showDialogBonusPromotion(mPromtionObject, errDescription);
+                } else {
+                    showDialogUseCodeStatus(errDescription, status);
+                }
+            } else {
+                if (aBoolean) {
+                    showDialogBonusPromotion(mPromtionObject, "");
+                }
             }
             super.onPostExecute(aBoolean);
         }
     }
 
     private void restoreImagePromotions() {
-        if (HttpRequest.isOnline(mContext)) {
+        if (isTreat && HttpRequest.isOnline(mContext)) {
             File file = new File(Uri.parse(mPromtionObject.getImageURL()).getPath());
             if (!file.exists()) {
                 String urlImage = DataItems.LINK_API + "/cms/gallery/" + mPromtionObject.getImageURL().substring(mPromtionObject.getImageURL().lastIndexOf('/') + 1);
@@ -1227,7 +1543,7 @@ public class MaterialSlide extends Fragment {
 
         @Override
         protected String doInBackground(Void... params) {
-            return Global.saveImagePromotion(mUrlImage);
+            return Global.saveImagePromotion(mUrlImage,reqWidth,reqHeight);
         }
 
         @Override

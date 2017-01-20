@@ -16,11 +16,13 @@ import com.neu.tomi.object.PromtionObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SqliteHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 10;
+    public static final int DATABASE_VERSION = 12;
     private static final String DATABASE_NAME = "PromotionDatabase";
     private static final String TABLE_PROMOTION_NAME = "tblPromotion";
     private static final String TABLE_USE_NAME = "tblUse";
@@ -29,13 +31,14 @@ public class SqliteHelper extends SQLiteOpenHelper {
     private static final String TABLE_SHARE_NAME = "tblShare";
     private static final String TABLE_FOOD_NAME = "tblFood";
     private Context mContext;
-    private static  SqliteHelper sqliteHelper=null;
+    private static SqliteHelper sqliteHelper = null;
 
     public static SqliteHelper getInstanceSQLiteHelper(Context context) {
-       if(sqliteHelper==null)
-           sqliteHelper=new SqliteHelper(context);
+        if (sqliteHelper == null)
+            sqliteHelper = new SqliteHelper(context);
         return sqliteHelper;
     }
+
     private SqliteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
@@ -47,13 +50,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
         //Nên gọi các phương thức tạo bảng
         String stringCreateTablePromotion = "CREATE TABLE " + TABLE_PROMOTION_NAME + " ( " +
                 "id TEXT PRIMARY KEY, " +
-                "image_uri TEXT,promo_link TEXT,beacon_id TEXT, description TEXT, note TEXT DEFAULT '', point_share INTEGER, xp_share INTEGER,  point_use INTEGER,xp_use INTEGER, share_action INTEGER, end_time TEXT, total INTEGER DEFAULT 1,show_url INTEGER DEFAULT 1,code_type INTEGER DEFAULT 1, name TEXT DEFAULT '')";
+                "image_uri TEXT,promo_link TEXT,beacon_id TEXT, description TEXT, note TEXT DEFAULT '', point_share INTEGER, xp_share INTEGER,  point_use INTEGER,xp_use INTEGER, share_action INTEGER, end_time TEXT, total INTEGER DEFAULT 1,show_url INTEGER DEFAULT 1,code_type INTEGER DEFAULT 1, name TEXT DEFAULT '',priority_level INTEGER DEFAULT 0,expired_status INTEGER DEFAULT 0)";
         String stringCreateTableUse = "CREATE TABLE " + TABLE_USE_NAME + " ( " +
                 "id TEXT, " +
                 "item_id INTEGER, image_uri TEXT, qty INTEGER,  PRIMARY KEY(id,item_id))";
         String stringCreateTableMessage = "CREATE TABLE " + TABLE_MESSAGE_NAME + " ( " +
                 "id TEXT, " +
-                "title TEXT, content TEXT, link TEXT, state INTEGER, date TEXT,link_type INTEGER,  PRIMARY KEY(id))";
+                "title TEXT, content TEXT, link TEXT, state INTEGER, date TEXT,link_type INTEGER, link_caption TEXT DEFAULT 'Tell us',  PRIMARY KEY(id))";
         String stringCreateTableFood = "CREATE TABLE " + TABLE_FOOD_NAME + " ( " +
                 "id INTEGER  PRIMARY KEY, " +
                 "qty INTEGER)";
@@ -114,18 +117,39 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 db.execSQL(_3alterTablePromotion);
                 db.execSQL(_4alterTablePromotion);
             }
-            if(oldVersion<9){
+            if (oldVersion < 9) {
                 String _5alterTablePromotion = "ALTER TABLE " + TABLE_MESSAGE_NAME + " ADD COLUMN " +
                         "link_type INTEGER DEFAULT 9";
                 db.execSQL(_5alterTablePromotion);
             }
-            if(oldVersion==9){
+            if (oldVersion == 9) {
                 String _alterTablePromotion = "ALTER TABLE " + TABLE_PROMOTION_NAME + " ADD COLUMN " +
                         "note TEXT DEFAULT ''";
                 db.execSQL(_alterTablePromotion);
             }
+            updateVersion11(oldVersion, db);
+            updateVersion12(oldVersion, db);
         } catch (Exception e) {
 
+        }
+    }
+
+    private void updateVersion11(int oldVersion, SQLiteDatabase db) {
+        if (oldVersion < 11) {
+            String alterTablePromotion = "ALTER TABLE " + TABLE_PROMOTION_NAME + " ADD COLUMN " +
+                    "priority_level INTEGER DEFAULT 0";
+            String alterTableMessage = "ALTER TABLE " + TABLE_MESSAGE_NAME + " ADD COLUMN " +
+                    "link_caption TEXT DEFAULT 'Tell us'";
+            db.execSQL(alterTablePromotion);
+            db.execSQL(alterTableMessage);
+        }
+    }
+
+    private void updateVersion12(int oldVersion, SQLiteDatabase db) {
+        if (oldVersion < 12) {
+            String alterTablePromotion = "ALTER TABLE " + TABLE_PROMOTION_NAME + " ADD COLUMN " +
+                    "expired_status INTEGER DEFAULT 0";
+            db.execSQL(alterTablePromotion);
         }
     }
 
@@ -191,9 +215,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
                             .getColumnIndex("xp_use"));
                     int share_action = cursor.getInt(cursor
                             .getColumnIndex("share_action"));
+                    int priority_level = cursor.getInt(cursor
+                            .getColumnIndex("priority_level"));
+                    int expired_status = cursor.getInt(cursor
+                            .getColumnIndex("expired_status"));
                     ActionObject useAction = new ActionObject(point_use, xp_use, getBonusItemById(useBonusItemObjects, id), 0);
                     ActionObject shareAction = new ActionObject(point_share, xp_share, getBonusItemById(shareBonusItemObjects, id), share_action);
-                    promtionObject = new PromtionObject(id, image_uri, description,note, useAction, shareAction, endTime, beacon_id, promo_link, total, show_url, code_type, name);
+                    promtionObject = new PromtionObject(id, image_uri, description, note, useAction, shareAction, endTime, beacon_id, promo_link, total, show_url, code_type, name, priority_level, expired_status);
                     break;
                 }
             }
@@ -345,12 +373,15 @@ public class SqliteHelper extends SQLiteOpenHelper {
                     String link = cursor.getString(cursor
                             .getColumnIndex("link"));
                     int state = cursor.getInt(cursor
-                            .getColumnIndex("state"));int linkType = cursor.getInt(cursor
+                            .getColumnIndex("state"));
+                    int linkType = cursor.getInt(cursor
                             .getColumnIndex("link_type"));
+                    String linkCaption = cursor.getString(cursor
+                            .getColumnIndex("link_caption"));
                     if (state > 0) {
-                        mailObjects.add(new MailObject(id, title, content, link, true,linkType));
+                        mailObjects.add(new MailObject(id, title, content, link, true, linkType, linkCaption));
                     } else {
-                        mailObjects.add(new MailObject(id, title, content, link, false,linkType));
+                        mailObjects.add(new MailObject(id, title, content, link, false, linkType, linkCaption));
                     }
                     cursor.moveToNext();
                 }
@@ -384,10 +415,12 @@ public class SqliteHelper extends SQLiteOpenHelper {
                             .getColumnIndex("state"));
                     int linkType = cursor.getInt(cursor
                             .getColumnIndex("link_type"));
+                    String linkCaption = cursor.getString(cursor
+                            .getColumnIndex("link_caption"));
                     if (state > 0) {
-                        mailObjects.add(new MailObject(id, title, content, link, true,linkType));
+                        mailObjects.add(new MailObject(id, title, content, link, true, linkType, linkCaption));
                     } else {
-                        mailObjects.add(new MailObject(id, title, content, link, false,linkType));
+                        mailObjects.add(new MailObject(id, title, content, link, false, linkType, linkCaption));
                     }
                     cursor.moveToNext();
                 }
@@ -473,7 +506,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     public List<PromtionObject> getAllPromotion() {
         List<PromtionObject> userObjects = new ArrayList<PromtionObject>();
-        List<PromtionObject> PromtionObjects = new ArrayList<PromtionObject>();
+        List<PromtionObject> promtionObjects = new ArrayList<PromtionObject>();
         List<BonusItemObject> useBonusItemObjects = getAllUseBonusItem();
         List<BonusItemObject> shareBonusItemObjects = getAllShareBonusItem();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -515,23 +548,35 @@ public class SqliteHelper extends SQLiteOpenHelper {
                             .getColumnIndex("xp_use"));
                     int share_action = cursor.getInt(cursor
                             .getColumnIndex("share_action"));
+                    int priority_level = cursor.getInt(cursor
+                            .getColumnIndex("priority_level"));
+                    int expired_status = cursor.getInt(cursor
+                            .getColumnIndex("expired_status"));
                     ActionObject useAction = new ActionObject(point_use, xp_use, getBonusItemById(useBonusItemObjects, id), 0);
                     ActionObject shareAction = new ActionObject(point_share, xp_share, getBonusItemById(shareBonusItemObjects, id), share_action);
-                    userObjects.add(new PromtionObject(id, image_uri, description,note, useAction, shareAction, endTime, beacon_id, promo_link, total, show_url, code_type, name));
+                    userObjects.add(new PromtionObject(id, image_uri, description, note, useAction, shareAction, endTime, beacon_id, promo_link, total, show_url, code_type, name, priority_level,expired_status));
                     cursor.moveToNext();
                 }
             }
             //soft
             int lastIndex = userObjects.size() - 1;
             for (int i = lastIndex; i >= 0; i--) {
-                PromtionObjects.add(userObjects.get(i));
+                promtionObjects.add(userObjects.get(i));
             }
+//            soft by priority_level
+            Collections.sort(promtionObjects, new Comparator<PromtionObject>() {
+                @Override
+                public int compare(PromtionObject lhs, PromtionObject rhs) {
+                    int sub = rhs.getPriorityLevel() - lhs.getPriorityLevel();
+                    return sub;
+                }
+            });
 
         } finally {
             db.setTransactionSuccessful();
             db.endTransaction();
             cursor.close();
-            return PromtionObjects;
+            return promtionObjects;
         }
     }
 
@@ -586,9 +631,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
                             .getColumnIndex("xp_use"));
                     int share_action = cursor.getInt(cursor
                             .getColumnIndex("share_action"));
+                    int priority_level = cursor.getInt(cursor
+                            .getColumnIndex("priority_level"));
+                    int expired_status = cursor.getInt(cursor
+                            .getColumnIndex("expired_status"));
                     ActionObject useAction = new ActionObject(point_use, xp_use, getBonusItemById(useBonusItemObjects, id), 0);
                     ActionObject shareAction = new ActionObject(point_share, xp_share, getBonusItemById(shareBonusItemObjects, id), share_action);
-                    userObjects.add(new PromtionObject(id, image_uri, description,note, useAction, shareAction, endTime, beacon_id, promo_link, total, show_url, code_type, name));
+                    userObjects.add(new PromtionObject(id, image_uri, description, note, useAction, shareAction, endTime, beacon_id, promo_link, total, show_url, code_type, name, priority_level,expired_status));
                     cursor.moveToNext();
                 }
             }
@@ -627,10 +676,12 @@ public class SqliteHelper extends SQLiteOpenHelper {
             promotionContentValues.put("promo_link", PromtionObject.getPromotionLink());
             promotionContentValues.put("code_type", PromtionObject.getCodeType());
             promotionContentValues.put("show_url", PromtionObject.getShowUrl());
+            promotionContentValues.put("priority_level", PromtionObject.getPriorityLevel());
+            promotionContentValues.put("expired_status", PromtionObject.getExpiredStatus());
             int total = 1;
             try {
                 total = PromtionObject.getTotal();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             promotionContentValues.put("total", total);
@@ -671,7 +722,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertMessage(String id, String title, String content, String link, int linkType) {//ghi file trc khi call
+    public boolean insertMessage(String id, String title, String content, String link, int linkType, String linkCaption) {//ghi file trc khi call
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         boolean result = true;
@@ -684,6 +735,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
             messageContentValues.put("link_type", linkType);
             messageContentValues.put("date", Global.getTime());
             messageContentValues.put("state", 0);
+            messageContentValues.put("link_caption", linkCaption);
             db.insert(TABLE_MESSAGE_NAME, null, messageContentValues);
 
 

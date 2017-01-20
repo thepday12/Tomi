@@ -21,6 +21,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
@@ -52,7 +53,6 @@ public class TomiService extends Service {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -72,19 +72,19 @@ public class TomiService extends Service {
 
         tomiPreferences = getSharedPreferences("MONKEY_WIDGET_PARAMS", Context.MODE_PRIVATE);
         handler = new Handler();
-        beaconManager = new BeaconManager(this);
-        beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 0);
+        beaconManager = new BeaconManager(getApplicationContext());
+        beaconManager.setBackgroundScanPeriod(300, 0);
+        beaconManager.setForegroundScanPeriod(300, 0);
+//        beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 0);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override
             public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
-
                 int size = beacons.size();
                 String sTmp = "";
                 for (int i = 0; i < size && i < 10; i++) {
                     Beacon b = beacons.get(i);
                     String id = b.getMajor() + "_" + b.getMinor();
 //                    sTmp += (sTmp.isEmpty() ? "" : ",") + id;//.getMajor());
-//                    Toast.makeText(mContext, b.getProximityUUID(), Toast.LENGTH_LONG).show();
                     if (b.getMajor() == TOMI_BEACON_MAJORID) {
                         sTmp += (sTmp.isEmpty() ? "" : ",") + id;//.getMajor());
                     }
@@ -92,48 +92,50 @@ public class TomiService extends Service {
                 }
                 if (!sTmp.isEmpty()) {
 
+
                     Global.isBeaconDetected = true;
 
                     if (!Global.currentAction.equals(Global.TOMI_ACTION_PROMO)) {
                         //kiem tra ton tai truoc
-                        boolean existBeacon =false;
+                        boolean existBeacon = false;
                         String items[] = sTmp.split(",");
-                        int lengItem =items.length;
-                        if(lengItem>1){
+                        int lengItem = items.length;
+                        if (lengItem > 1) {
                             String items2[] = Global.lastBeaconInfo.split(",");
-                            if(lengItem!=items2.length){
-                                existBeacon=false;
-                            }else{
-                                int check=0;
-                                for(int i=0;i<lengItem;i++){
-                                    String tmp =items[i];
-                                    for(int j=0;j<lengItem;j++){
-                                        if(tmp.equals(items2[j])){
+                            if (lengItem != items2.length) {
+                                existBeacon = false;
+                            } else {
+                                int check = 0;
+                                for (int i = 0; i < lengItem; i++) {
+                                    String tmp = items[i];
+                                    for (int j = 0; j < lengItem; j++) {
+                                        if (tmp.equals(items2[j])) {
                                             check++;
                                         }
                                     }
                                 }
-                                existBeacon=(check==lengItem);
+                                existBeacon = (check == lengItem);
                             }
-                        }else {
-                            existBeacon=Global.lastBeaconInfo.equals(sTmp);
+                        } else {
+                            existBeacon = Global.lastBeaconInfo.equals(sTmp);
                         }
                         //Dat lại beaconInfo
                         Global.lastBeaconInfo = sTmp;
-                        long currentTime =System.currentTimeMillis();
+                        long currentTime = System.currentTimeMillis();
                         //Notification bi ngat hoac da detect beacon moi
-                        if (TIME_CLEAR_NOTIFICATION < 0||!existBeacon) {
+                        if (TIME_CLEAR_NOTIFICATION < 0 || !existBeacon) {
                             TIME_CLEAR_NOTIFICATION = currentTime;
                             showNotificationDetectBeacon(getBaseContext());
                             if((currentTime-TIME_SHOW_EFFECT_NOTIFICATION)>1200000){
-                                TIME_SHOW_EFFECT_NOTIFICATION=currentTime;
+//                            if ((currentTime - TIME_SHOW_EFFECT_NOTIFICATION) > 30000) {
+                                TIME_SHOW_EFFECT_NOTIFICATION = currentTime;
                                 effectNotificationDetectBeacon(getBaseContext());
                             }
                         }
 
                         TIME_DETECT = currentTime;
-                        if(TIME_SHOW_EFFECT_NOTIFICATION<0){
-                            TIME_SHOW_EFFECT_NOTIFICATION =currentTime;
+                        if (TIME_SHOW_EFFECT_NOTIFICATION < 0) {
+                            TIME_SHOW_EFFECT_NOTIFICATION = currentTime;
                         }
                         //Tomi show bang
                         showPromoSign();
@@ -165,7 +167,7 @@ public class TomiService extends Service {
 	      }
 	    });
 */
-
+        initBeaconScan();
 
     }
 
@@ -200,8 +202,7 @@ public class TomiService extends Service {
 //        Log.e("Received", "onStartCommand");
 
         mIsServiceRunning = true;
-        //initBeaconScan();
-        connectToService();
+//        connectToService();
         startTimer();
         return START_STICKY;
     }
@@ -227,18 +228,18 @@ public class TomiService extends Service {
     boolean firstTimeCheckBluetooth = true;
 
     void checkBluetooth() {
-        boolean b = beaconManager.isBluetoothEnabled();
-        if (b != lastBlueToothEnabled || firstTimeCheckBluetooth) {
-            firstTimeCheckBluetooth = false;
-            lastBlueToothEnabled = b;
-            if (lastBlueToothEnabled) {
-                //initBeaconScan();
-            } else {
-                onLostBeacon();
-                //beaconManager.disconnect();
-                //showNotification(1,"Disconnect iBeacon service");
-            }
-        }
+//        boolean b = beaconManager.isBluetoothEnabled();
+//        if (b != lastBlueToothEnabled || firstTimeCheckBluetooth) {
+//            firstTimeCheckBluetooth = false;
+//            lastBlueToothEnabled = b;
+//            if (lastBlueToothEnabled) {
+//                initBeaconScan();
+//            } else {
+//                onLostBeacon();
+//                //beaconManager.disconnect();
+//                //showNotification(1,"Disconnect iBeacon service");
+//            }
+//        }
 
     }
 
@@ -325,29 +326,19 @@ public class TomiService extends Service {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
-                try {
-                    beaconManager.startRanging(TOMI_REGION);
-                } catch (RemoteException e) {
-//                    Log.e(TAG, "Cannot start ranging", e);
-                }
+                beaconManager.startRanging(TOMI_REGION);
             }
         });
     }
 
     void initBeaconScan() {
-        try {
-            beaconManager.stopMonitoring(TOMI_REGION);
-        } catch (RemoteException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        beaconManager.disconnect();
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
                 try {
-                    beaconManager.startMonitoring(TOMI_REGION);
-                } catch (RemoteException e) {
+                    beaconManager.startRanging(TOMI_REGION);
+
+                } catch (Exception e) {
                 }
             }
         });
@@ -383,6 +374,7 @@ public class TomiService extends Service {
         Intent resultIntent = new Intent(context, MainActivity.class);
         resultIntent.setAction(Intent.ACTION_MAIN);
         resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        resultIntent.putExtra("EXTRA_BEACON_INFO", Global.lastBeaconInfo);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 103,
                 resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -393,7 +385,7 @@ public class TomiService extends Service {
         mNotificationManager.notify(Global.NOTIFICATION_ID, mBuilder.build());
     }
 
-    private static void effectNotificationDetectBeacon(Context context){
+    private static void effectNotificationDetectBeacon(Context context) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(1000);
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -402,12 +394,10 @@ public class TomiService extends Service {
     }
 
 
-
     private void sendActionListToServer(Context context, DataItems dataItems) {
         new SendActionToServer(context, dataItems).execute();
 
     }
-
 
 
     class SendActionToServer extends AsyncTask<Void, Void, JSONObject> {

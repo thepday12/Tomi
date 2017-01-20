@@ -103,7 +103,7 @@
     <Button
         android:id="@+id/btOk"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tvNote"
         android:layout_marginTop="16dp"
         android:background="@drawable/button_dialog_close"

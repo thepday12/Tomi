@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:layout_height="36dp"
             android:layout_marginRight="8dp"
-            android:background="@drawable/dialog_redeem_cancel_button"
+            android:background="@drawable/dialog_black_button"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="Close"
@@ -46,10 +46,10 @@
             android:id="@+id/btOk"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:background="@drawable/dialog_redeem_ok_button"
+            android:background="@drawable/dialog_blue_button"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="Open treasure box"
+            android:text="@string/button_open_treasure"
             android:layout_weight="1"
             android:textColor="@color/white" />
     </LinearLayout>

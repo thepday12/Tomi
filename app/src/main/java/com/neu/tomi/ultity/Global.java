@@ -22,6 +22,7 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
+import android.widget.ImageView;
 
 import com.neu.tomi.R;
 import com.neu.tomi.object.ItemObject;
@@ -31,6 +32,7 @@ import com.neu.tomi.widget.TomiProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -71,6 +73,10 @@ public class Global {
     public static final String TOMI_ACTION_PROMO = "TOMI_ACTION_PROMO";
     public static final String TOMI_ACTION_BAG = "TOMI_ACTION_BAG";
     public static final String TOMI_ACTION_NONE = "TOMI_ACTION_NONE";
+    public static final String BROADCAST_USE_CODE = "BROADCAST_USE_CODE";
+    public static final String EXTRA_ID = "EXTRA_ID";
+    public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION";
     public static String CLOCK_WIDGET_UPDATE = "com.neu.tomi.CLOCK_WIDGET_UPDATE";
     public static final int TOMI_KEY_BANANA = -9001;
     public static final int TOMI_KEY_DANCE = -9002;
@@ -533,13 +539,16 @@ public class Global {
         return time;
     }
 
-public static String saveImagePromotion(String imageUrl){
+public static String saveImagePromotion2(String imageUrl){
 //    final String imageUrl = promtionObject.getImageURL();
     try {
         String fileName =imageUrl.substring(imageUrl.lastIndexOf('/') + 1); //promtionObject.getPromotionId() + ".png";
         URL url = new URL(imageUrl);
         URLConnection conn = url.openConnection();
-        Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream(),null,options);
+
         File myDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS) + "/tomi_image");
         if (!myDir.exists()) {
@@ -558,14 +567,78 @@ public static String saveImagePromotion(String imageUrl){
         return "";
     }
 }
-    public static boolean savePromotion(PromtionObject promtionObject, SqliteHelper sqliteHelper) {
+
+        public  static String saveImagePromotion(String imageUrl, int width, int height){
+//    final String imageUrl = promtionObject.getImageURL();
+        try {
+            String fileName =imageUrl.substring(imageUrl.lastIndexOf('/') + 1); //promtionObject.getPromotionId() + ".png";
+            URL url = new URL(imageUrl);
+            URLConnection conn = url.openConnection();
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Bitmap bitmap = BitmapFactory.decodeStream(url.openStream(),null,options);
+
+            InputStream is = url.openStream();
+            bitmap = BitmapFactory.decodeStream(is,null,options);
+
+//get actual width x height of the image and calculate the scale factor
+            options.inSampleSize = calculateInSampleSize(options,
+                    width,height);
+
+            options.inJustDecodeBounds = false;
+            bitmap=BitmapFactory.decodeStream(url.openStream(),null,options);
+
+            File myDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS) + "/tomi_image");
+            if (!myDir.exists()) {
+                myDir.mkdirs();
+            }
+            myDir = new File(myDir, fileName);
+            if (!myDir.exists()) {
+
+                FileOutputStream out = new FileOutputStream(myDir);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.flush();
+                out.close();
+            }
+            return Uri.fromFile(myDir).toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if(reqHeight>0&&reqWidth>0) {
+            if (height > reqHeight || width > reqWidth) {
+
+                final int halfHeight = height / 2;
+                final int halfWidth = width / 2;
+
+                // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+                // height and width larger than the requested height and width.
+                while ((halfHeight / inSampleSize) >= reqHeight
+                        && (halfWidth / inSampleSize) >= reqWidth) {
+                    inSampleSize *= 2;
+                }
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static boolean savePromotion(PromtionObject promtionObject, SqliteHelper sqliteHelper, int width, int height) {
         // Store image to default external storage directory
         PromtionObject object = sqliteHelper.getPromotionWithID(promtionObject.getPromotionId());
         if (object != null) {
             sqliteHelper.updatePromotion(promtionObject.getPromotionId(), object.getTotal() + 1);
             return true;
         } else {
-            String promotionURI = saveImagePromotion(promtionObject.getImageURL());
+            String promotionURI = saveImagePromotion(promtionObject.getImageURL(),width,height);
             if (promotionURI.isEmpty())
                 return false;
             else {
@@ -577,14 +650,14 @@ public static String saveImagePromotion(String imageUrl){
 
     }
 
-    public static boolean buyPromotion(PromtionObject promtionObject, SqliteHelper sqliteHelper) {
+    public static boolean buyPromotion(PromtionObject promtionObject, SqliteHelper sqliteHelper, int width, int height) {
         // Store image to default external storage directory
             PromtionObject object = sqliteHelper.getPromotionWithID(promtionObject.getPromotionId());
             if (object != null) {
                 sqliteHelper.updatePromotion(promtionObject.getPromotionId(), object.getTotal() + 1);
                 return true;
             } else {
-                String promotionURI = saveImagePromotion(promtionObject.getImageURL());
+                String promotionURI = saveImagePromotion(promtionObject.getImageURL(),width,height);
                 if (promotionURI.isEmpty())
                     return false;
                 else {

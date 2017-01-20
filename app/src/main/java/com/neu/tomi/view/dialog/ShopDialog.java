@@ -486,7 +486,7 @@ private String errDescription;
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return Global.buyPromotion(mPromtionObject, mSqliteHelper);
+            return Global.buyPromotion(mPromtionObject, mSqliteHelper,0,0);
 
         }
 
