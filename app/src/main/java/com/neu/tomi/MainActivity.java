@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -244,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    isAddWidget=true;
+                    isAddWidget = true;
                     checkLogin();
                 }
             });
@@ -390,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void showDialogSignUp() {
 
-        if (!dialogSignUp.isShowing()) {
+        if (dialogSignUp != null && !dialogSignUp.isShowing()) {
             dialogSignUp.setContentView(R.layout.dialog_sign_up);
 
             Button btCancel = (Button) dialogSignUp.findViewById(R.id.btCancel);
@@ -524,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Manifest.permission.ACCESS_FINE_LOCATION);
         int permissionReadPhoneState = ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_PHONE_STATE);
-        if ((permissionCoarseLocation+permissionFineLocation+permissionWrite + permissionRead + permissionReadPhoneState) != PackageManager.PERMISSION_GRANTED) {
+        if ((permissionCoarseLocation + permissionFineLocation + permissionWrite + permissionRead + permissionReadPhoneState) != PackageManager.PERMISSION_GRANTED) {
 
 //            // Should we show an explanation?
 //            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -625,8 +627,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 if (grantResults.length > 0) {
                     int result = PackageManager.PERMISSION_GRANTED;
                     for (int grant : grantResults) {
-                        if(grant!=PackageManager.PERMISSION_GRANTED) {
-                            result=PackageManager.PERMISSION_DENIED;
+                        if (grant != PackageManager.PERMISSION_GRANTED) {
+                            result = PackageManager.PERMISSION_DENIED;
                             break;
                         }
                     }
@@ -778,7 +780,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         String email = "";
                         try {
                             name = object.getString("name");
-                            JSONObject picture =object.getJSONObject("picture");
+                            JSONObject picture = object.getJSONObject("picture");
                             link = picture.getJSONObject("data").getString("url");// "http://graph.facebook.com/" + socialId + "/picture?width=100&height=100";
                         } catch (JSONException e) {
                         }
@@ -806,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                             sex = 1;
                         }
                         String socialIdNew = "facebook" + socialId;
-                        new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex,email).execute();
+                        new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex, email).execute();
                         dialog.dismiss();
                         mDataItems.setNameOfUser(name);
                     }
@@ -841,7 +843,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
 //            String socialIdNew ="google"+acct.getId();
             String socialIdNew = "google" + email;
-            new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex,email).execute();
+            new GetPointFirstRun(MainActivity.this, socialIdNew, link, name, birthday, sex, email).execute();
             dialog.dismiss();
         } else {
             // Signed out, show unauthenticated UI.
@@ -860,14 +862,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         private int mSex;
         private ProgressDialog mDialog;
 
-        public GetPointFirstRun(Context context, String socialId, String avatar, String name, String birthday, int sex,String email) {
+        public GetPointFirstRun(Context context, String socialId, String avatar, String name, String birthday, int sex, String email) {
             mContext = context;
             mSocialId = socialId;
             mAvatar = avatar;
             mName = name;
             mBirthday = birthday;
             mSex = sex;
-            mEmail=email;
+            mEmail = email;
         }
 
         @Override
@@ -879,7 +881,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return mDataItems.getFirstRunService(mSocialId, mAvatar, mName, mBirthday, mSex, MainActivity.this,mEmail);
+            return mDataItems.getFirstRunService(mSocialId, mAvatar, mName, mBirthday, mSex, MainActivity.this, mEmail);
         }
 
         @Override
@@ -898,6 +900,93 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         mDataItems.setFirstShow();
                     }
                     startActivityHome(true);
+                } catch (JSONException e) {
+                    connectFailed();
+                }
+
+            } else {
+                connectFailed();
+            }
+            super.onPostExecute(jsonObject);
+        }
+    }
+
+    private void showDialogUseCodeStatus(String errDescription, final boolean state, boolean showResend) {
+        if (!errDescription.isEmpty()) {
+            final Dialog dialog = new Dialog(MainActivity.this);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_status_code);
+
+            TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+            TextView tvContent = (TextView) dialog.findViewById(R.id.tvContent);
+            Button btCancel = (Button) dialog.findViewById(R.id.btCancel);
+            Button btResend = (Button) dialog.findViewById(R.id.btResend);
+            tvContent.setText(Html.fromHtml(errDescription));
+//            tvContent.setText(errDescription);
+            if (!state) {
+                tvTitle.setText("Error!");
+                tvTitle.setTextColor(Color.parseColor("#cc0000"));
+            }
+
+
+            btCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    if (state) {
+                        if (dialogSignUp != null && dialogSignUp.isShowing())
+                            dialogSignUp.dismiss();
+                    }
+                }
+            });
+            if (showResend) {
+                btResend.setVisibility(View.VISIBLE);
+                btResend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        new ResendEmail(MainActivity.this, etSignInEmail.getText().toString()).execute();
+                    }
+                });
+            }
+            dialog.show();
+        }
+    }
+
+
+    class ResendEmail extends AsyncTask<Void, Void, JSONObject> {
+        private Context mContext;
+        private String mEmail;
+
+        private ProgressDialog mDialog;
+
+        public ResendEmail(Context context, String email) {
+            mContext = context;
+            mEmail = email;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mDialog = ProgressDialog.show(mContext, null,
+                    "Sign up...", true);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return mDataItems.resendEmail(mEmail, MainActivity.this);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            mDialog.dismiss();
+            if (jsonObject != null) {
+                try {
+                    boolean state = jsonObject.getBoolean("state");
+                    String message = jsonObject.getString("err_description");
+                    showDialogUseCodeStatus(message, state,false);
+
                 } catch (JSONException e) {
                     connectFailed();
                 }
@@ -941,19 +1030,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mDialog.dismiss();
             if (jsonObject != null) {
                 try {
+                    boolean state = jsonObject.getBoolean("state");
+                    String message = jsonObject.getString("err_description");
 
-                    if (jsonObject.getBoolean("state")) {
+                    if (state) {
                         mDataItems.addPoint(jsonObject.getInt("point"), 0);
                         boolean exist = jsonObject.getBoolean("exist");
                         mDataItems.setServerDetectLostData(exist);
                         mDataItems.setNameOfUser(mName);
                         mDataItems.setUserId(mEmail);
                         mDataItems.setLoadFirstRun();
-                        startActivityHome();
+//                        startActivityHome();
                     } else {
                         etSignupEmail.setError(getString(R.string.edit_text_email_Exist));
                         etSignupEmail.requestFocus();
                     }
+                    showDialogUseCodeStatus(message, state,false);
 
                 } catch (JSONException e) {
                     connectFailed();
@@ -1004,7 +1096,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         mDataItems.setUserId(mEmail);
                         startActivityHome(true);
                     } else {
-                        Toast.makeText(MainActivity.this, jsonObject.getString("err_description"), Toast.LENGTH_SHORT).show();
+                        String errorCode = jsonObject.getString("error_code");
+                        boolean isShowRecent = errorCode.equals("ACC_NOT_ACTIVATED");
+                        showDialogUseCodeStatus(jsonObject.getString("err_description"), false,isShowRecent);
+//                        Toast.makeText(MainActivity.this, jsonObject.getString("err_description"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     connectFailed();
@@ -1072,7 +1167,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             File fileOrDirectory = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS) + "/tomi_image");
             if (fileOrDirectory.isDirectory()) {
-                if(fileOrDirectory.listFiles()!=null&&fileOrDirectory.listFiles().length>0)
+                if (fileOrDirectory.listFiles() != null && fileOrDirectory.listFiles().length > 0)
                     for (File child : fileOrDirectory.listFiles())
                         child.delete();
             }
@@ -1082,7 +1177,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             signOutSocial();
             mDataItems.setUpdateVersion41(true);
         }
-        if(!mDataItems.isUpdateVersion48()){
+        if (!mDataItems.isUpdateVersion48()) {
             mDataItems.setUserId("");
             signOutSocial();
             mDataItems.setUpdateVersion48(true);

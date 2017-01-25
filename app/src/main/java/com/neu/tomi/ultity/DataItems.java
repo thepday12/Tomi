@@ -57,8 +57,8 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by Thep on 10/18/2015.
  */
 public class DataItems {
-//    public static final String LINK_API = "http://neublick.com/tomi";//"http://neublick.com/tomi/test";
-        public static final String LINK_API = "http://neublick.com/tomi/test";
+    public static final String LINK_API = "http://neublick.com/tomi";//"http://neublick.com/tomi/test";
+//        public static final String LINK_API = "http://neublick.com/tomi/test";
     public static final String PROMOTION_ID_KEY = "PROMOTION_ID";
     public static final String INFO_FILE_NAME = "info.txt";
     public static final String BEACON_ID_KEY = "BEACON_ID";
@@ -1175,6 +1175,41 @@ public class DataItems {
         } catch (JSONException e) {
             return null;
         }
+        return jsonObject;
+    }
+
+    public static JSONObject resendEmail(String email,Context context) {
+        String brand = Build.MANUFACTURER.toUpperCase();
+        String model = Build.MODEL.toUpperCase();
+        if (model.startsWith(brand)) {
+            model = model.replace(brand, "").trim();
+
+        }
+//        try {
+//            password = Global.md5(URLEncoder.encode(password, "UTF-8"));
+//        } catch (UnsupportedEncodingException e) {
+//
+//        }
+        JSONObject jsonObject =null;
+        String url = LINK_API + "/cms/pages/Tommi_API.php";
+        String phoneId = getPhoneIdNoEncode(context);
+        HashMap hashMap = new HashMap();
+        hashMap.put("Object", "Users");
+        hashMap.put("act", "Resend");
+        hashMap.put("phone_id", phoneId);
+        hashMap.put("email", email);
+        hashMap.put("version", String.valueOf(Build.VERSION.SDK_INT));
+
+        String json = performPostCall(url, hashMap);
+
+
+        try {
+            jsonObject = new JSONObject(json);
+        } catch (JSONException e) {
+            return null;
+        }
+
+
         return jsonObject;
     }
 

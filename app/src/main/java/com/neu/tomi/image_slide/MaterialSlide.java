@@ -595,7 +595,6 @@ public class MaterialSlide extends Fragment {
 
                     String code = etCode.getText().toString();
                     if (code.length() > 0) {
-                        hiddenKeyboard();
                         new DeletePromotion(mContext, true, code).execute();
                     }
                     dialog.dismiss();
@@ -869,6 +868,7 @@ public class MaterialSlide extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            hiddenKeyboard();
             mDialog = ProgressDialog.show(mContext, null,
                     "Loading..", true);
         }
@@ -1108,40 +1108,34 @@ public class MaterialSlide extends Fragment {
     }
     public void showDialogBonusPromotion(PromtionObject promtionObject, String congratulationText) {
         if (dialog != null && dialog.isShowing()) return;
-
+        dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_bonus_promotion);
+        dialog.setCanceledOnTouchOutside(false);
 //        dialog.setTitle("Title...");
 
         // set the custom dialog components - text, image and button
 
-        TextView tvId = (TextView) dialog.findViewById(R.id.tvId);
         TextView tvCongratulation = (TextView) dialog.findViewById(R.id.tvCongratulation);
-        WebView wvDescriptionDetail = (WebView) dialog.findViewById(R.id.wvDescriptionDetail);
-        TextView tvExpire = (TextView) dialog.findViewById(R.id.tvExpire);
         ImageView ivPromotion = (ImageView) dialog.findViewById(R.id.ivPromotion);
         Button btOk = (Button) dialog.findViewById(R.id.btOk);
+        Button btOpenTreasureBox = (Button) dialog.findViewById(R.id.btOpenTreasureBox);
         final ProgressBar pbImageProgress = (ProgressBar) dialog.findViewById(R.id.pbImageProgress);
+        String tmp="Congratulation! You've got a voucher.";
         if (!congratulationText.isEmpty())
-            tvCongratulation.setText(Html.fromHtml(congratulationText));
+            tmp =congratulationText;
+//            String textCongratulation = "<html><head>"
+//                    + "<style type=\"text/css\">body{color: #fff; background-color: #ffffffff;}"
+//                    + "</style></head>"
+//                    + "<body>"
+//                    + tmp
+//                    + "</body></html>";
+//
+//        tvCongratulation.loadDataWithBaseURL(null, textCongratulation, "text/html", "utf-8", null);
+//        tvCongratulation.setBackgroundColor(Color.TRANSPARENT);
+//        tvCongratulation.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        tvCongratulation.setText(Html.fromHtml(tmp));
 
-        String id = "NO. ";
-        try {
-            String s = promtionObject.getBeaconID().replace("28788_", "");
-            id += s + "-" + promtionObject.getPromotionId();
-        } catch (Exception e) {
-        }
-        tvId.setText(id);
-        String text = "<html><head>"
-                + "<style type=\"text/css\">body{color: #fff; background-color: #ffffffff;}"
-                + "</style></head>"
-                + "<body>"
-                + mPromtionObject.getDescription()
-                + "</body></html>";
-        wvDescriptionDetail.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
-        wvDescriptionDetail.setBackgroundColor(Color.TRANSPARENT);
-        wvDescriptionDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
-
-        tvExpire.setText("Expiry: " + promtionObject.getEndTimeShow());
         Picasso.with(mContext).load(promtionObject.getImageURL()).into(ivPromotion, new Callback.EmptyCallback() {
             @Override
             public void onSuccess() {
@@ -1159,51 +1153,59 @@ public class MaterialSlide extends Fragment {
             }
         });
 
+        btOpenTreasureBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getActivity().finish();
+                Intent intent = new Intent(mContext, PromotionDialog.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("TREAT", true);
+                intent.putExtra("PROMOTION_ID", mPromtionObject.getPromotionId());
+                startActivity(intent);
+
+            }
+        });
+
         dialog.show();
     }
     public void showDialogBonusPromotion(PromtionObject promtionObject, String congratulationText,String imageLink) {
         if (dialog != null && dialog.isShowing()) return;
-
+        dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_bonus_promotion);
+        dialog.setCanceledOnTouchOutside(false);
 //        dialog.setTitle("Title...");
 
         // set the custom dialog components - text, image and button
 
-        TextView tvId = (TextView) dialog.findViewById(R.id.tvId);
         TextView tvCongratulation = (TextView) dialog.findViewById(R.id.tvCongratulation);
-        WebView wvDescriptionDetail = (WebView) dialog.findViewById(R.id.wvDescriptionDetail);
-        TextView tvExpire = (TextView) dialog.findViewById(R.id.tvExpire);
         ImageView ivPromotion = (ImageView) dialog.findViewById(R.id.ivPromotion);
         Button btOk = (Button) dialog.findViewById(R.id.btOk);
+        Button btOpenTreasureBox = (Button) dialog.findViewById(R.id.btOpenTreasureBox);
         final ProgressBar pbImageProgress = (ProgressBar) dialog.findViewById(R.id.pbImageProgress);
+        String tmp="Congratulation! You've got a voucher.";
         if (!congratulationText.isEmpty())
-            tvCongratulation.setText(Html.fromHtml(congratulationText));
+            tmp =congratulationText;
+//            String textCongratulation = "<html><head>"
+//                    + "<style type=\"text/css\">body{color: #fff; background-color: #ffffffff;}"
+//                    + "</style></head>"
+//                    + "<body>"
+//                    + tmp
+//                    + "</body></html>";
+//
+//        tvCongratulation.loadDataWithBaseURL(null, textCongratulation, "text/html", "utf-8", null);
+//        tvCongratulation.setBackgroundColor(Color.TRANSPARENT);
+//        tvCongratulation.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        tvCongratulation.setText(Html.fromHtml(tmp));
 
-        String id = "NO. ";
-        try {
-            String s = promtionObject.getBeaconID().replace("28788_", "");
-            id += s + "-" + promtionObject.getPromotionId();
-        } catch (Exception e) {
-        }
-        tvId.setText(id);
-        String text = "<html><head>"
-                + "<style type=\"text/css\">body{color: #fff; background-color: #ffffffff;}"
-                + "</style></head>"
-                + "<body>"
-                + mPromtionObject.getDescription()
-                + "</body></html>";
-        wvDescriptionDetail.loadDataWithBaseURL(null, text, "text/html", "utf-8", null);
-        wvDescriptionDetail.setBackgroundColor(Color.TRANSPARENT);
-        wvDescriptionDetail.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 
-        tvExpire.setText("Expiry: " + promtionObject.getEndTimeShow());
         Picasso.with(mContext).load(imageLink).into(ivPromotion, new Callback.EmptyCallback() {
             @Override
             public void onSuccess() {
                 pbImageProgress.setVisibility(View.GONE);
             }
         });
-
         // if button is clicked, close the custom dialog
         btOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1213,6 +1215,19 @@ public class MaterialSlide extends Fragment {
             }
         });
 
+        btOpenTreasureBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getActivity().finish();
+                Intent intent = new Intent(mContext, PromotionDialog.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("TREAT", true);
+                intent.putExtra("PROMOTION_ID", mPromtionObject.getPromotionId());
+                startActivity(intent);
+
+            }
+        });
         dialog.show();
     }
 

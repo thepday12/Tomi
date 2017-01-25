@@ -439,11 +439,13 @@ public class UsePromotionActivity extends AppCompatActivity {
 
 
     private void sendBroadCastSuccess(){
-        Intent intent = new Intent(Global.BROADCAST_USE_CODE+promotionId);
-        intent.putExtra(Global.EXTRA_ID, promotionId);
-        intent.putExtra(Global.EXTRA_DATA, bonusPromotions);
-        intent.putExtra(Global.EXTRA_DESCRIPTION, errDescription);
-        sendBroadcast(intent);
+        if(!bonusPromotions.isEmpty()) {
+            Intent intent = new Intent(Global.BROADCAST_USE_CODE + promotionId);
+            intent.putExtra(Global.EXTRA_ID, promotionId);
+            intent.putExtra(Global.EXTRA_DATA, bonusPromotions);
+            intent.putExtra(Global.EXTRA_DESCRIPTION, errDescription);
+            sendBroadcast(intent);
+        }
 
     }
 
